@@ -1,3 +1,7 @@
+---
+description: '里面的语句有些过时,不适合Mysql,  只适合 SQLserver 2008 r2 (微软)'
+---
+
 # 简单操作和数据库简介
 
 ## 1、**数据库简介** 
@@ -84,15 +88,47 @@
     )
 ```
 
+使用数据库：use 数据库名 
+
+表：创建、修改、删除 通过select \* from sysobjects where xtype='U '可以查看所有存在的表 
+
+         多个列间使用逗号分隔 
 
 
 
+* 主键：primary key 
+* 非空：not null 
+* 惟一：unique 
+* 默认：default\(\) 
+* 检查：check\(\) 
+* 外键：foreign key\(列名\)   references 表名\(列名\)
 
 
 
+## 5、表数据的操作
 
+#### 简单查询：select \* from 表名
 
+### 增加数据：insert into 表名\(列名\) values\(值\)
 
+* 说明1：要求值的列名与值要位置对应
+* 说明2：如果所有更都插入值，可以省略列名部分 
+* 扩展：一次性增加多行，可以直接在values后面拼接多个数据，之间用逗号分隔 
+
+#### 修改数据：update 表名 set 列名1=值1,列名2=值2... where ... 
+
+### 删除数据：delete from 表名 where ... 
+
+* 清空：truncate table 表名
+* 说明：from关键字可以省略不写 
+* 通常实现：逻辑删除，物理删除
+
+### 常用辅助命令及快捷键 
+
+* set statistics time on/off：在消息栏显示详细执行时间
+* ctrl+e执行
+* ctrl+r隐藏消息栏
+* ctrl+l计划任务, 对sql语句进行分析
 
 
 
