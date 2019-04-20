@@ -42,9 +42,47 @@
   * 班级表ClassInfo（编号cId，名称cTitle nvarchar\(10\)）
   * 学生表（编号，姓名，性别，出生日期，电话，邮箱，班级）
 
+## 4、脚本操作
 
+**不区分大小写，字符串使用单引号，末尾不需要加分号**
 
+按照功能分类：
 
+* DDL：数据定义语言，用于进行各种数据库对象的创建，主要操作包括下面三个.\(很少用\)
+  * create 创建 \(这个修改只能用于表,  数据库是没有修改操作的\)
+  * alter    修改
+  * drop    删除
+* DML：数据管理语言，用于对表数据的添加、修改、删除、查询，主键操作包括下面四个
+  * insert     增加数据
+  * update   修改数据
+  * delete     删除数据
+  * select     查找数据 \(这个最难\)
+* DCL：数据控制语言，用于进行权限分配等
+
+**注释**：**--单行注释**，/**/多行注释**
+
+### 数据库：创建、删除 ,  数据库是没有修改这个操作的
+
+#### 可以通过查看master数据库中的sysdatabases表，来了解当前存在的数据库
+
+```sql
+    create database --数据库名
+    on primary   --定义主文件
+    (
+        name='stuDB_data',  -- 主数据文件的逻辑名称
+        filename='D:\stuDB_data.mdf', -- 主数据文件的物理名称
+        size=5mb, --主数据文件的初始大小
+        maxsize=100mb, -- 主数据文件增长的最大值
+        filegrowth=15%--主数据文件的增长率
+    )
+    log on
+    (
+        name='stuDB_log',
+        filename='D:\stuDB_log.ldf',
+        size=2mb,
+        filegrowth=1mb
+    )
+```
 
 
 
