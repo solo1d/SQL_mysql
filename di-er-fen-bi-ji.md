@@ -39,14 +39,14 @@ mysql> SHOW TABLES;
    mysql> show variables like 'collation_%'; 
 -- 创建一个库,并且设置字符集, 可以是utf8 或者 utf8mb4(新标准)
 */----------------
-mysql> CREATE DATABASE 数据库名 CHARSET utf8mb4
+mysql> CREATE DATABASE 数据库名 CHARSET utf8mb4;
 
 
 /*---------------------------------------------------
-
---
+删除一个数据库
+--删除数据库
 */----------------
-
+mysql> DROP DATABASE 数据库名;
 
 
 /*---------------------------------------------------
