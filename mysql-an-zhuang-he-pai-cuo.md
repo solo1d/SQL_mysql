@@ -1,8 +1,8 @@
 ---
-description: Linux
+description: 'Linux, 服务名是 mysqld'
 ---
 
-# Mysql 安装和排错
+# Mysql服务器 安装和排错
 
 ## 首先清除系统残留.
 
