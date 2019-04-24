@@ -10,4 +10,5 @@
 * [登陆命令](di-er-fen-bi-ji.md)
 * [库操作](ku-cao-zuo.md)
 * [增删改查](zeng-shan-gai-cha.md)
+* [列类型, 建表规范](lie-lei-xing-jian-biao-gui-fan.md)
 
