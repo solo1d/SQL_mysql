@@ -11,12 +11,18 @@
 ## MYSQL 三大列类型
 
 * **数值型**
-  * 整形
-    * Tinyint        占一个字节, 存储范围 -128~127,  0-255
-    * Smallint      
-    * Mediuint
-    * Int
-    * Bigint
+  * 整形 \( 有个设定的统一规则zerofill\(M\) ,表示0填充,而且附带属性 unsigned \)
+    * Tinyint        占一个字节, 存储范围 -128~127,  0-255,  \( 默认规则是 -128 到 127 \)
+      * 添加 unsigned 规则后是  0-255
+    * Smallint      占两个字节, 存储范围 -32768~32767   
+      * 添加 unsigned 规则后是 0-65535
+    * Mediumint   占三个字节,存储范围 -8388608 ~ 8388607
+      * 添加 unsigned 规则后是 0-16777215
+    * Int                   占四个字节, 存储范围  -2147483648~ 2147483647
+      * 添加 unsigned 规则后是 0-4294967295
+    * Bigint             占八个字节,存储范围 -9223372036854775808 ~ 9223372036854775807
+      * 添加unsigned 规则后是 0-18446744073709551615
+    * 声明实例: mysql&gt; ALTER TABLE class ADD snum smallint\(5\) zerofill not null default 0;
   * 小数 \(浮点型, 定点型\)
 * 
 
