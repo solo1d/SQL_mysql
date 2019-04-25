@@ -16,5 +16,17 @@
 
             $mysql    -h 192.168.1.1    -P 3306    -u root   -p
 
+## 记录命令   这个命令会记录接下来的所有操作和表的内容
 
+mysql&gt;  tee   /Users/用户名/log/log.txt
+
+#### 会将当前所有的记录保存一份,到 log.txt文件中. 就是终端所有显示的内容都会放入进去.
+
+#### 停止记录的命令是   mysql&gt;  notee   
+
+### 当我们在查询一张表的时候，输出的结果可能会很多，这时在控制台上分析起来很不方便。我们可以将结果导出到文件分析
+
+### 以下命令也能实现相同的功能. 使用的是终端的重定向功能
+
+**$**mysql -h 192.168.1.110 -u root -p123123 -e "use test; SHOW tables; SELECT \* FROM class; exit; " &gt;&gt; /Users/用户/log/log.txt
 
