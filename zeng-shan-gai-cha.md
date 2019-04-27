@@ -25,6 +25,15 @@ mysql> CREATE TABLE stu (
            sname varchar(10)
            )ENGINE myisam charset utf8;
 
+/*---------------------------------------------------
+向表内增加一列,而且指定这个列上数据的类型和默认值,和非空选项
+--表内新建一列,相当于修改了当前表的规格
+*/----------------
+mysql> ALTER TABLE class
+        ADD  newLine
+        smallint(5)  zerofill  not null default 0 ;
+        # 一个两字节int, 5个0填充位, 默认类型是无符号, 默认值是 00000.
+
 
 /*---------------------------------------------------
 向表内插入数据.(需要有表, 而且知道表的格式),(目前表的格式是 id int,sname varchar(20) )
@@ -189,7 +198,7 @@ mysql> SHOW TABLES;
 
 
 /*---------------------------------------------------
-查看表内数据, 表是 newstu , 字符集是utf8
+查看表内数据, 表是  newstu , 字符集是utf8
 --查看表内数据 ,  FROM 前面的星号 * 表示的是选中所有行,然后一起打印.
 */----------------
 mysql> SELECT * FROM newstu;
