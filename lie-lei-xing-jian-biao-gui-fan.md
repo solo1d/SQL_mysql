@@ -26,9 +26,9 @@
       * float\(6 , 2\)   --&gt; 存储范围是   +9999.99 到  -9999.99  \(默认有符号\)
       * float\(6, 2\) unsigned   ---&gt; 无符号,  +9999.99  到  0
       * 如果 M &lt;= 24  那么就占用 4字节, 否则占用 8字节.
-    * **定点:  decimal , 定点是把整数部分和小数部分 分开存储, 比float精确.**
+    * **定点:  decimal , 定点是把整数部分和小数部分 分开存储, 比float精确.\(不要设置为\)**
       * 用多少就分多少, 不用太过担心容量, 是一种变长类型.但是精度高.
-    * mysql&gt;  CREATE TABLE class \( nd decimal unsigned not null default 0.00, nf float unsigned not null default 0.00\) ENGINE myisam CHARSET utf8;
+    * mysql&gt;  CREATE TABLE class \( nd decimal\(8,2\) unsigned not null default 0.00, nf float\(4,2\) unsigned not null default 0.00\) ENGINE myisam CHARSET utf8;
 
 ### **字符串 \(占多少大的空间是按照字符编码确定的, utf8 占3字节 \)**
 
