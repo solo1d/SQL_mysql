@@ -26,7 +26,7 @@
       * float\(6 , 2\)   --&gt; 存储范围是   +9999.99 到  -9999.99  \(默认有符号\)
       * float\(6, 2\) unsigned   ---&gt; 无符号,  +9999.99  到  0
       * 如果 M &lt;= 24  那么就占用 4字节, 否则占用 8字节.
-    * **定点:  decimal , 定点是把整数部分和小数部分 分开存储, 比float精确.\(不要设置为\)**
+    * **定点:  decimal , 定点是把整数部分和小数部分 分开存储, 比float精确.\(超过10,2 会多浪费一个字节, 除非真的需要\)**
       * 用多少就分多少, 不用太过担心容量, 是一种变长类型.但是精度高.
     * mysql&gt;  CREATE TABLE class \( nd decimal\(8,2\) unsigned not null default 0.00, nf float\(4,2\) unsigned not null default 0.00\) ENGINE myisam CHARSET utf8;
 
@@ -52,7 +52,7 @@
   * _mysql&gt;  CREATE TABLE test4  \( mydt datetime not null default  '1000-01-01 00:00:00' \)ENGINE myisam charset utf8;_
 * **year**     年份类型,   YYYY    , 范围 1901到 2155  , 基数是1901,还可以存 0000 ,占1字节,最多255种变化. 如果设定超出界限,那么会自动转换为 0000 .
   * _mysql&gt; ALTER TABLE test3 \(my  year not null default '1901' \) ENGINE myisam charset utf8;_
-* _**timestamp**_     时间戳, 通过特定的参数 CURRENT\_TIMESTAMP 来自动获取目前时间和日期,然后自动写入数据内. 设为默认参数的话 就可以不用管它了,非常方便.
+* _**timestamp**_     时间戳, 通过特定的参数 CURRENT\_TIMESTAMP 来自动获取目前时间和日期,然后自动写入数据内. 设为默认参数的话 就可以不用管它了,非常方便.\(一般可以用 int unsigned来代替它\)
   * _mysql&gt; CREATE TABLE test5\( ts timestamp default CURRENT\_TIMESTAMP, id int \)ENGINE myisam charset utf8;_
 
 \_\_

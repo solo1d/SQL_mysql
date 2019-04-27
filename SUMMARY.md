@@ -10,6 +10,6 @@
 * [登陆命令和记录命令](di-er-fen-bi-ji.md)
 * [库操作](ku-cao-zuo.md)
 * [数值类型 和 列类型](lie-lei-xing-jian-biao-gui-fan.md)
-* [建表规范](jian-biao-gui-fan-he-lie-lei-xing.md)
+* [表规范 和 列规范](jian-biao-gui-fan-he-lie-lei-xing.md)
 * [增删改查](zeng-shan-gai-cha.md)
 
