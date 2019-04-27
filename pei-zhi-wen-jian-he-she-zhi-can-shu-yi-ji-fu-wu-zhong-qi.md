@@ -13,7 +13,7 @@ $ sudo  /etc/init.d/mysql     start/restart/stop
 
 [mysqld]
 sql_mode="STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION"
-# 上面这行代表开启了严格模式
+# 上面这行代表开启了严格模式, 如果删除这行就代表关闭了严格模式
 ```
 
 ### 目前所使用的版本
