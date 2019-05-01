@@ -13,4 +13,5 @@
 * [数值类型 和 列类型](lie-lei-xing-jian-biao-gui-fan.md)
 * [表规范 和 列规范](jian-biao-gui-fan-he-lie-lei-xing.md)
 * [增删改查](zeng-shan-gai-cha.md)
+* [面试题](mian-shi-ti.md)
 
