@@ -216,9 +216,11 @@ mysql> UPDATE goods SET
   * 列 BETWEEN  值1  AND  值2 ;    **在某范围内, 值1 和值2 之间, 也包括他俩.**
   * 列   **非!\(NOT**\)   表达式  ,    列   **\|\|或\(OR\)**  表达式 ,    列    **&&与\(AND\)  表达式.**  _AND优先级比OR高 ,NOT 优先级比 AND高._
   * 模糊查询       列  LIKE   '值%'   , 百分号是通配符, 匹配前或者匹配后,  ‘值\_‘  下划线表示匹配一个字符.
-* GROUP BY分组
+* GROUP BY  分组
+  * GROUP BY 列;     将列内相同的值看成一组, 然后只显示一个出来.
+  * 以GROUP BY a,b,c ;  为例, 则 SELECT的列, 只能在a,b,c 里选择,语意上才没有矛盾.
+* HAVING 筛选
   * 
-* HAVING 筛选,
 * ORDER BY  排序
 *  LIMIT 限制结果条数
 
@@ -324,10 +326,11 @@ mysql> SELECT goods_name,(apri-dpri) AS dis
 
 
 /*---------------------------------------------------
-
---
+分组查询,  将cat_id 中的每个编号都进行分组,然后计算每个组内 shop_price的平均值
+--按照cat_id 的值来进行分组    GROUP BY  列
 */----------------
-
+mysql> SELECT cat_id,SUM(shop_price) FROM goods      # SUM是求平均值函数
+         GROUP BY  cat_id;                  # 按照哪个列进行分组, 就把哪个写在这里.
 
 
 /*---------------------------------------------------
