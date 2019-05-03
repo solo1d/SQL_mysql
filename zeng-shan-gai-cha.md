@@ -217,6 +217,7 @@ mysql> UPDATE goods SET
   * 列   **非!\(NOT**\)   表达式  ,    列   **\|\|或\(OR\)**  表达式 ,    列    **&&与\(AND\)  表达式.**  _AND优先级比OR高 ,NOT 优先级比 AND高._
   * 模糊查询       列  LIKE   '值%'   , 百分号是通配符, 匹配前或者匹配后,  ‘值\_‘  下划线表示匹配一个字符.
 * GROUP BY分组
+  * 
 * HAVING 筛选,
 * ORDER BY  排序
 *  LIMIT 限制结果条数
@@ -363,7 +364,30 @@ mysql> SELECT goods_name,(apri-dpri) AS dis
 */----------------
 
 
-;SELECT (num >= 20 AND num < 30) AS a,(num >=30 AND num < 40) AS b FROM goods
-         WHERE 
+
 ```
+
+### 查询时可能会用到的函数
+
+#### 统计函数
+
+* max\(列\)    求最大, 会打印列上的一个最大值,  ;mysql&gt; SELECT  max\(列\)   FROM  表;
+* min\(列\)     求最小, 会打印列上的一个最小值,  ;mysql&gt; SELECT  mim\(列\)   FROM  表;
+* sum\(列\)    求总和, 会打印列上所有值相加的和,   ;mysql&gt; SELECT  sum\(列\)   FROM  表;
+* avg\(列\)     求平均, 会打印列上所有值相加的和平均值   ;mysql&gt; SELECT  avg\(列\)   FROM  表;
+* count\(列\)  求总行数, 会打印列上总行数,    ;mysql&gt; SELECT  count\(\*\)   FROM  表;
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
 
