@@ -211,6 +211,8 @@ mysql> UPDATE goods SET
 
 **SELECT  5种子句:**    
 
+**WHERE会首先发挥作用,然后是GROUP , 随后是 HAVING** 
+
 * WHERE 条件查询运算符   \( _包括下面和常用的_  &gt; =  &lt;   \),  WHERE 先筛选再输出.  **列就是变量,再每行上,列的值都在变化,WHERE 添加就是表达式,在哪一行上表达式为真,哪行就读取出来.**
   * 列  IN \(1,2\);        **在某集合内, 这个集合目前只有1和2.**                  
   * 列 BETWEEN  值1  AND  值2 ;    **在某范围内, 值1 和值2 之间, 也包括他俩.**
@@ -221,10 +223,11 @@ mysql> UPDATE goods SET
   * 以GROUP BY a,b,c ;  为例, 则 SELECT的列, 只能在a,b,c 里选择,语意上才没有矛盾.
 * HAVING 筛选
   * 对 WHERE 和 GROUP BY 筛选过之后 而生成的临时表再次进行筛选, 这个时候AS 别名生效了. 也计算完成了
-  * mysql&gt; SELECT name,AVG\(score\) AS fen ,SUM\(score&lt;60\) AS gks FROM result   GROUP BY name 
-
-        -&gt; HAVING gks &gt;=2;
+  * mysql&gt; SELECT name,AVG\(score\) AS fen ,SUM\(score&lt;60\) AS gks FROM result   GROUP BY name     HAVING gks &gt;=2;
 * ORDER BY  排序
+  * 排序是针对 最终结果集, 即 ORDER BY 要放在  WHERE  / GROUP BY / HAVING 后面, 顺序不能乱.
+  * ORDER BY 结果集中的列名 desc/asc    高到低/低到高  降序/升序
+    * 例: ORDER BY   shop\_price     desc   ;     按价格降序  高价到低价
 *  LIMIT 限制结果条数
 
 ```sql
