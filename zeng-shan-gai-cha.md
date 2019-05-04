@@ -220,7 +220,10 @@ mysql> UPDATE goods SET
   * GROUP BY 列;     将列内相同的值看成一组, 然后只显示一个出来.
   * 以GROUP BY a,b,c ;  为例, 则 SELECT的列, 只能在a,b,c 里选择,语意上才没有矛盾.
 * HAVING 筛选
-  * 
+  * 对 WHERE 和 GROUP BY 筛选过之后 而生成的临时表再次进行筛选, 这个时候AS 别名生效了. 也计算完成了
+  * mysql&gt; SELECT name,AVG\(score\) AS fen ,SUM\(score&lt;60\) AS gks FROM result   GROUP BY name 
+
+        -&gt; HAVING gks &gt;=2;
 * ORDER BY  排序
 *  LIMIT 限制结果条数
 
@@ -334,10 +337,12 @@ mysql> SELECT cat_id,SUM(shop_price) FROM goods      # SUM是求平均值函数
 
 
 /*---------------------------------------------------
-
---
+这是一个面试题, 求取挂科超过2门及以上的 同学的平均分(所有分数),
+--使用逆向思维来求
 */----------------
-
+mysql> SELECT name,AVG(score) AS fen ,SUM(score<60) AS gks FROM result  
+        GROUP BY name 
+        HAVING gks >=2;
 
 
 /*---------------------------------------------------
