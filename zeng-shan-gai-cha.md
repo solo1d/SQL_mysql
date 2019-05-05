@@ -236,7 +236,15 @@ mysql> UPDATE goods SET
 
 ### 子查询
 
-
+* **WHERE  型子查询:  指的是内层查询的结果作为外层查询的比较条件\( IN\(\) , BETWEEN, NOT\)**
+  * 如果 WHERE 列 = \(内层 sql\), 则内层 sql 返回的必是单行单列, 单个值
+  * 如果 WHERE 列 IN \(内层 sql\),  则内层 sql 值返回单列 , 可以多行
+    * 典型题: 查询每个栏目下的最大商品
+      * mysql&gt; SELECT goods\_name,goods\_id,cat\_id FROM goods WHERE goods\_id  IN  \(SELECT goods\_id FROM goods ORDER BY goods\_id DESC\)  GROUP BY cat\_id;
+* **FROM  型子查询:   即,内层sql的查询结果,当成一张临时表,供外层sql再次查询**
+  * mysql&gt; SELECT goods\_id FROM  \(SELECT goods\_id  FROM goods \);
+* **EXISTS  型子查询: 是指  把外层sql的结果,拿到内层sql去测试, 如果内层sql成立,则改行取出.**
+  * **mysql&gt; SELECT cat\_id,goods\_name FROM goods WHERE EXISTS \( SELECT \* FROM goods WHERE goods.cat\_id = category.cat\_id\);**
 
 
 
@@ -381,7 +389,10 @@ mysql> SELECT goods_name,shop_price  FROM goods
 取每个栏目下 cat_id , 编号最大的 goods_di 那个商品的名称
 --需要用到子查询
 */----------------
-mysql> 
+mysql>  SELECT cat_id,goods_id,goods_name FROM goods
+         WHERE goods_id IN (SELECT goods_id FROM goods 
+          ORDER BY goods_id DESC)
+            GROUP BY cat_id;
          
          
 /*---------------------------------------------------
