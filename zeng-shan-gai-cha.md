@@ -246,7 +246,48 @@ mysql> UPDATE goods SET
 * **EXISTS  型子查询: 是指  把外层sql的结果,拿到内层sql去测试, 如果内层sql成立,则改行取出.**
   * **mysql&gt; SELECT cat\_id,goods\_name FROM goods WHERE EXISTS \( SELECT \* FROM goods WHERE goods.cat\_id = category.cat\_id\);**
 
+### 左连接 和 右连接
 
+**左链接   语法: SELECT   表A.列   表B.列    列   FROM   表A  LEFT JOIN 表B  ON 条件;**
+
+**右连接   语法: SELECT  表B.列   表A.列    列   FROM   表B  RIGHT JOIN 表A  ON 条件;**
+
+#### 左连接就是将两个表看成一张表来进行查询,  FROM 后面跟的是左链接 和 查询条件.
+
+#### 当出现空值的时候,数据库会使用NULL进行填充.  
+
+#### SELECT 表A.列  表B别名.列   FROM 表A LEFT JOIN 表B AS 表B别名   ON 条件;        \#\#  这个时候可以 将表B进行别名
+
+如果从集合的角度来看, 这是两个表的交集.
+
+#### 左链接和右连接的表的顺序可以互换, 就能够达到相同的结果. 但是出于移植方面考虑,还是推荐只使用左连接.
+
+```sql
+#左连接
+mysql>  SELECT  goods_id,goods.cat_id,cat_table.cat_id,cat_name 
+        FROM  goods LEFT JOIN catrgory  AS cat_table        #这里可以添加AS来进行多表区分
+                ON goods.cat_id = cat_table.cat_id 
+        WHERE goods.cat_id = 4;
+#右连接
+mysql>  SELECT  goods_id,goods.cat_id,catrgory.cat_id,cat_name 
+        FROM  catrgory RIGHT JOIN goods  ON goods.cat_id = catrgory.cat_id 
+        WHERE goods.cat_id = 4;
+```
+
+### 内连接 和 外连接
+
+**内链接   语法: SELECT   表A.列   表B.列    列   FROM   表A  INNER JOIN 表B  ON 条件;**
+
+#### **两**表相联, 除去一方出现空值的行. 而不是用NULL 填充
+
+如果从集合的角度来看, 内连接是左右连接的交集. 外连接是左右连接的并集.
+
+```sql
+#内连接
+mysql>  SELECT  goods_id,goods.cat_id,catrgory.cat_id,cat_name 
+        FROM  catrgory INNER JOIN goods  ON goods.cat_id = catrgory.cat_id 
+        WHERE goods.cat_id = 4;
+```
 
 ### 查询范例和重点内容
 
@@ -396,10 +437,12 @@ mysql>  SELECT cat_id,goods_id,goods_name FROM goods
          
          
 /*---------------------------------------------------
-
---
+左链接,goods表内取出第 4 个cat_id 下的商品,以及category的商品名 cat_name, 
+--左链接查询  SELECT 列 FROM 表A LEFT JOIN 表B ON 条件   
 */----------------
-mysql> 
+mysql> SELECT goods_name,goods.cat_id,caregory.cat_name   #表中独有的行可以不加表头.
+         FROM goods LEFT JOIN category ON goods.cat = category.cat_id
+         WHERE goods.cat = 4;
 
 
 /*---------------------------------------------------
