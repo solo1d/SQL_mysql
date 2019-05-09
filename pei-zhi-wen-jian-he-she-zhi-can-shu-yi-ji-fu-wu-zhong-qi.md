@@ -1,4 +1,4 @@
-# 配置文件和设置参数以及服务重启
+# 配置文件和设置参数以及服务重启和重置密码
 
 ## 启动/重启/停止 命令
 
@@ -19,4 +19,21 @@ sql_mode="STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION"
 ### 目前所使用的版本
 
 mysql  Ver 15.1 Distrib 10.1.37-MariaDB, for debian-linux-gnueabihf \(armv8l\) using readline 5.2
+
+## 重置密码
+
+遗忘密码的解决方案
+
+1. 断网!!
+2. 关闭mysql 和 mysqld 两个服务
+3. 执行命令:   \# mysql --skip -grant -tables
+4. 这个时候 mysqld 服务进程已经打开, 不需要权限检查
+5. 无密码登陆服务器    \# mysql -u root
+6. 修改权限表
+
+   1. mysql&gt;   use mysql;
+   2. mysql&gt;   UPDATE user SET Password=password\('新密码'\)  WHERE   User = 'root';
+   3. mysql&gt;   flush privileges;
+
+7. 完成:
 

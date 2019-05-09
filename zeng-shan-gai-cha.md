@@ -209,7 +209,7 @@ mysql> UPDATE goods SET
 
 ### 查询三要素: 查哪张表的数据 , 查哪些列 
 
-**SELECT  5种子句:**    
+### **SELECT  5种子句:    WHERE / GROUP BY / HAVING / ORDER BY / LIMIT** 
 
 **WHERE会首先发挥作用,然后是GROUP BY , 随后是 HAVING ,接着是 ORDER BY 最后是 LIMIT**
 
@@ -225,7 +225,7 @@ mysql> UPDATE goods SET
   * 对 WHERE 和 GROUP BY 筛选过之后 而生成的临时表再次进行筛选, 这个时候AS 别名生效了. 也计算完成了
   * mysql&gt; SELECT name,AVG\(score\) AS fen ,SUM\(score&lt;60\) AS gks FROM result   GROUP BY name     HAVING gks &gt;=2;
 * ORDER BY  排序
-  * 排序是针对 **最终结果集,** 即 ORDER BY 要放在  WHERE  / GROUP BY / HAVING **后面**, 顺序不能乱.  **可以进行多字段排序,  使用逗号分开就好了**
+  * 排序是针对 **最终结果集,** 即 ORDER BY 要放在  WHEE  / GROUP BY / HAVING **后面**, 顺序不能乱.  **可以进行多字段排序,  使用逗号分开就好了**
   * ORDER BY 结果集中的列名 **desc/asc**    高到低/低到高  降序/升序
     * 例: ORDER BY   shop\_price     desc   ;     按价格降序  高价到低价
     * 例:  **ORDER BY shop\_price  asc  ,  cat\_id  desc;**    首先按照shop\_price 进行升序排序, _**如果 shop\_price出现相同的列, 那么再按照 desc排序**_,   shop 在前面,优先级高,    cat\_id 在后面, 优先级低.
@@ -234,7 +234,7 @@ mysql> UPDATE goods SET
   * LIMIT  0,3;   只展示从0开始的 前3条信息
   * LIMIT   3,2;    跳过前三个, 只展示两条结果,  就是第 4 个和第 5 个.
 
-### 子查询
+### 子查询       WHERE / FROM  / EXISTS
 
 * **WHERE  型子查询:  指的是内层查询的结果作为外层查询的比较条件\( IN\(\) , BETWEEN, NOT\)**
   * 如果 WHERE 列 = \(内层 sql\), 则内层 sql 返回的必是单行单列, 单个值
@@ -246,7 +246,7 @@ mysql> UPDATE goods SET
 * **EXISTS  型子查询: 是指  把外层sql的结果,拿到内层sql去测试, 如果内层sql成立,则改行取出.**
   * **mysql&gt; SELECT cat\_id,goods\_name FROM goods WHERE EXISTS \( SELECT \* FROM goods WHERE goods.cat\_id = category.cat\_id\);**
 
-### 左连接 和 右连接
+### 左连接 和 右连接  LEFT JOIN /  RIGHT JOIN
 
 **左链接   语法: SELECT   表A.列   表B.列    列   FROM   表A  LEFT JOIN 表B  ON 条件;**
 
@@ -274,19 +274,32 @@ mysql>  SELECT  goods_id,goods.cat_id,catrgory.cat_id,cat_name
         WHERE goods.cat_id = 4;
 ```
 
-### 内连接 和 外连接
+### 内连接 和 外连接    INNER JOIN  /   UNION
 
 **内链接   语法: SELECT   表A.列   表B.列    列   FROM   表A  INNER JOIN 表B  ON 条件;**
 
-#### **两**表相联, 除去一方出现空值的行. 而不是用NULL 填充
+**外连接    语法: \(sql1\)  UNION \(sql2\);      UNION+ ALL参数, 他表示不合并重复的数据行,默认是合并.**
 
-如果从集合的角度来看, 内连接是左右连接的交集. 外连接是左右连接的并集.
+#### **内连接的两**表相联, 除去一方出现空值的行. 而不是用NULL 填充
+
+#### 外连接的相连,以sql1 列名和列数为标准, 忽略类型,  主要是将两个表的数据合并后输出.而且 sql2 语句中的表名只适用于寻找, 而输出时会被忽略 不显示.
+
+如果从集合的角度来看, 内连接是左右连接的交集. 外连接是左右连接的并集.**后面还可以添加排序等 五种子句**
 
 ```sql
 #内连接
 mysql>  SELECT  goods_id,goods.cat_id,catrgory.cat_id,cat_name 
         FROM  catrgory INNER JOIN goods  ON goods.cat_id = catrgory.cat_id 
         WHERE goods.cat_id = 4;
+#外连接
+mysql>  SELECT goods_id,cat_id,cat.cat_name
+        FROM goods 
+        UNION
+        SELECT cat_id,cat.cat_name
+        FROM cat
+        ORDER BY  goods_id  ASC;       
+# 注意 这个排序针对的是 最终合并后的结果集 进行排序, 也就是说, 先外连接,然后再排序.  
+# 如果排序写在sql1 的内部 ,那么在不影响最终结果集的情况下, mysql代码解释器会把它优化掉(删除掉).
 ```
 
 ### 查询范例和重点内容
@@ -446,10 +459,17 @@ mysql> SELECT goods_name,goods.cat_id,caregory.cat_name   #表中独有的行可
 
 
 /*---------------------------------------------------
-
---
+外连接, 查出 第cat_id =3 的列下, 列shop_price 前3高的商品,和第 cat_id=4 的列下 ,
+ 列shop_price 前2高的商品.
+-- 用UNION完成.  因为需要使用, ORDER BY和 LIMIT 所以 需要使用小括号.
 */----------------
-mysql> 
+mysql>  (SELECT goods_name,cat_id,shop_price FROM goods 
+         WHERE cat_id=3 ORDER BY shop_price  DESC LIMIT 3 ) 
+         UNION 
+         (SELECT goods_name, cat_id,shop_price FROM goods 
+         WHERE cat_id = 4 ORDER BY shop_price DESC LIMIT 2) ;
+         # 如果括号内仅仅有 ORDER BY 的话, 执行期间会被mysql代码分析器优化掉, 因为排序没有意义.
+         # 但是出现 LIMIT 就有意义了, ORDEF BY会影响最终结果, 而如果仅仅只有排序是不会影响的.
 
 
 /*---------------------------------------------------
