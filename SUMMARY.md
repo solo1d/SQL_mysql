@@ -17,4 +17,5 @@
 * [增删改查](zeng-shan-gai-cha.md)
 * [面试题](mian-shi-ti.md)
 * [如果mysql函数和C++函数都实现某个功能,则优先使用C++](ru-guo-mysql-han-shu-he-c++-han-shu-du-shi-xian-mou-ge-gong-neng-ze-you-xian-shi-yong-c++.md)
+* [视图view](shi-tu-view.md)
 
