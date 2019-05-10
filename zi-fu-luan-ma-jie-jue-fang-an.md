@@ -1,6 +1,6 @@
 # 字符乱码解决方案
 
-## 字符乱码解决操作
+## 字符乱码解决操作 :  连接器是关键.
 
 服务器编码长度   &gt;=  连接器编码长度  &gt;=  客户端编码长度
 
@@ -14,20 +14,23 @@ UTF8 &gt;  GBK &gt;  ASCII
 # 客户端有GBK和UTF8,   连接器支持很多编码 默认是UTF8 , 数据库服务器 默认也是UTF8
 
 mysql> SET CHARACTER_SET_CLIENT = GBK;   
-        # 这步是告诉 服务器, 我客户端的发送数据的编码是 GBK 的
+        # 这步是告诉 连接器, 我客户端使用的编码是 GBK 的
 
-mysql> SET CHARACTER_SET_CONNECTION = UTF8;
-        # 再告诉连接器, 将得到的数据编码转换成 UTF8 然后送给服务器. (服务器默认是UTF8)
+mysql> SET CHARACTER_SET_CONNECTION = GBK;
+        # 告诉连接器,从客户端拿到的数据是 GBK的.然后转成UTF8 送给服务器.(服务器默认是UTF8)
+        # 这个参数无所谓, 要么等于数据库编码,要么等于客户端编码, 都是一次转码的过程.
         
 mysql> SET  CHARACTER_SET_RESULTS = GBK;
-        # 再告诉连接器, 返回数据的编码是 GBK 的.
+        # 再告诉连接器,返回数据的编码是 GBK的,将从数据库拿取到的数据编码转换成GBK发到客户端
 
 -------
-mysql> SET NAMES utf8;
-        # 这句话是上面三句话的集合, 将客户端,连接器,连接器返回客户端, 这三个编码都改成UTF8
+mysql> SET NAMES GBK;
+        # 这句话是上面三句话的集合, 将客户端,连接器,连接器返回客户端, 这三个编码都改成GBK
 ```
 
+#### 连接器的特性:  连接客户端与服务器,   连接器有两个转换器.   客户端的字符先发给连接器, 连接器选择一种编码将其转换, 临时存储,     然后再次转换成 服务器 需要的编码, 并最终存储在服务器.  
 
+### 我们用户无权干涉和修改 连接器和服务器 中间的转码设定.
 
 ## 范例1 
 
@@ -35,11 +38,17 @@ mysql> SET NAMES utf8;
 
 ```sql
 mysql> SET CHARACTER_SET_CLIENT = UTF8;      # 告诉连接器  客户端是发送的编码是 UTF8
-mysql> SET CHARACTER_SET_CONNECTION = GBK;   # 告诉连接器  服务器是GBK
+mysql> SET CHARACTER_SET_CONNECTION = UTF8;  # 设置连接器的编码是UTF8, 发送给服务器的时候会转码成GBK  
 mysql> SET CHARACTER_SET_RESULTS = UTF8;     # 告诉连接器  返回给客户端的编码是 UTF8
 ```
 
+## 范例2
 
+### 服务器 UTF8 , 客户端GBK  , 设置连接器
+
+```sql
+mysql> SET NAMES GBK;    #方便设置, 让连接器也变成GBK, 然后自动和服务器协商,再次转成UTF8;
+```
 
 
 
