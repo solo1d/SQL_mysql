@@ -1,5 +1,5 @@
 ---
-description: '全部都是表操作, 一定要注意输入法和全角半角问题.'
+description: '全部都是表操作和库操作, 一定要注意输入法和全角半角问题.'
 ---
 
 # 增删改查
@@ -66,12 +66,24 @@ mysql> INSERT INTO test.mmp        # 批量导入的表是 mmp,它是接受数�
 
 
 /*---------------------------------------------------
-
---
+建立一张可以 增删改查的 视图
+--使用建立语句,除了WHERE, 不能包含其他子句和函数
 */----------------
+mysql>  CREATE VIEW v1
+        AS
+        SELECT * FROM goods WHERE shop_price < 3000;
 
 
-
+/*---------------------------------------------------
+建立一张只可以  查找  的视图,  不能使用 增删改
+--也使用建表语句, 毫无限制
+*/----------------
+mysql> CREATE VIEW v2
+        AS
+        SELECT goods_id,goods_name,AVG(shop_price),cat_id
+        FROM goods  GROUP BY cat_id
+        ORDER BY cat_id
+        LIMIT 4;
 ```
 
 ## 删
@@ -293,13 +305,13 @@ mysql>  SELECT  goods_id,goods.cat_id,catrgory.cat_id,cat_name
         WHERE goods.cat_id = 4;
 #外连接
 mysql>  SELECT goods_id,cat_id,cat.cat_name
-        FROM goods 
+        FROM goods
         UNION
         SELECT cat_id,cat.cat_name
         FROM cat
         ORDER BY  goods_id  ASC;       
 # 注意 这个排序针对的是 最终合并后的结果集 进行排序, 也就是说, 先外连接,然后再排序.  
-# 如果排序写在sql1 的内部 ,那么在不影响最终结果集的情况下, mysql代码解释器会把它优化掉(删除掉).
+#如果排序写在sql1的内部,那么在不影响最终结果集的情况下,mysql代码解释器会把它优化掉(删除掉).
 ```
 
 ### 查询范例和重点内容
@@ -465,7 +477,7 @@ mysql> SELECT goods_name,goods.cat_id,caregory.cat_name   #表中独有的行可
 */----------------
 mysql>  (SELECT goods_name,cat_id,shop_price FROM goods 
          WHERE cat_id=3 ORDER BY shop_price  DESC LIMIT 3 ) 
-         UNION 
+         UNION  ALL     # 有ALL 表示不覆盖重复项, 没有ALL 表示合并相同项.
          (SELECT goods_name, cat_id,shop_price FROM goods 
          WHERE cat_id = 4 ORDER BY shop_price DESC LIMIT 2) ;
          # 如果括号内仅仅有 ORDER BY 的话, 执行期间会被mysql代码分析器优化掉, 因为排序没有意义.
