@@ -1,5 +1,5 @@
 ---
-description: 操作系统是MACos
+description: 操作系统是MAC
 ---
 
 # mysql客户端安装和连接

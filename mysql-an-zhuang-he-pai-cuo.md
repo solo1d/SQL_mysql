@@ -4,6 +4,8 @@ description: 'Linux, 服务名是 mysqld'
 
 # Mysql服务器 安装和排错
 
+真正在后台提供服务程序的进程是 mysqld
+
 ## 首先清除系统残留.
 
 ### 删除系统自带mysql：
