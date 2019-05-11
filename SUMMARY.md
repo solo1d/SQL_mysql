@@ -20,4 +20,5 @@
 * [面试题](mian-shi-ti.md)
 * [如果mysql函数和C++函数都实现某个功能,则优先使用C++](ru-guo-mysql-han-shu-he-c++-han-shu-du-shi-xian-mou-ge-gong-neng-ze-you-xian-shi-yong-c++.md)
 * [常见错误代码解释](chang-jian-cuo-wu-dai-ma-jie-shi.md)
+* [关于NULL值的判断](guan-yu-null-zhi-de-pan-duan.md)
 
