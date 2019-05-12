@@ -180,6 +180,13 @@ mysql>  ALTER TABLE 表名  DROP PRIMARY key;     #因为主键没有名字,所�
     改操作
 ###############################################################
 /*---------------------------------------------------
+修改库的设置
+--忘记设置库为utf8了
+*/----------------
+ALTER DATABASE 库名   CHARSET UTF8;
+
+
+/*---------------------------------------------------
 将一个已经存在的表改名, 把 stu这个表 改名为 newstu.
 --表 改名
 */----------------
@@ -200,7 +207,7 @@ mysql> ALTER TABLE class
 将表  m1 中的列  gender  他的类型修改为 char(4) not null default '';
 -- 修改列的名字和类型
 */----------------
-mysql>  ALTER TABLE m1 
+mysql>  ALTER TABLE m1
          MODIFY gender char(4) not null default '';
     
     
@@ -248,11 +255,6 @@ mysql> UPDATE goods SET
 
 
 
-/*---------------------------------------------------
-
---
-*/----------------
-
 ```
 
 ## 查
@@ -268,18 +270,18 @@ mysql> UPDATE goods SET
   * 列 BETWEEN  值1  AND  值2 ;    **在某范围内, 值1 和值2 之间, 也包括他俩.**
   * 列   **非!\(NOT**\)   表达式  ,    列   **\|\|或\(OR\)**  表达式 ,    列    **&&与\(AND\)  表达式.**  _AND优先级比OR高 ,NOT 优先级比 AND高._
   * 模糊查询       列  LIKE   '值%'   , 百分号是通配符, 匹配前或者匹配后,  ‘值\_‘  下划线表示匹配一个字符.
-* GROUP BY  分组
+* GROUP BY  分组    \(_**作用在查询结果上,也就是说上面第一个子句都已经生效并且执行完毕**_\)
   * GROUP BY 列;     将列内相同的值看成一组, 然后只显示一个出来.
   * 以GROUP BY a,b,c ;  为例, 则 SELECT的列, 只能在a,b,c 里选择,语意上才没有矛盾.
-* HAVING 筛选
+* HAVING 筛选  \(_**作用在查询结果上,也就是说上面两个子句都已经生效并且执行完毕**_\)
   * 对 WHERE 和 GROUP BY 筛选过之后 而生成的临时表再次进行筛选, 这个时候AS 别名生效了. 也计算完成了
   * mysql&gt; SELECT name,AVG\(score\) AS fen ,SUM\(score&lt;60\) AS gks FROM result   GROUP BY name     HAVING gks &gt;=2;
-* ORDER BY  排序
+* ORDER BY  排序 \(_**作用在查询结果上,也就是说上面三个子句都已经生效并且执行完毕**_\)
   * 排序是针对 **最终结果集,** 即 ORDER BY 要放在  WHEE  / GROUP BY / HAVING **后面**, 顺序不能乱.  **可以进行多字段排序,  使用逗号分开就好了**
   * ORDER BY 结果集中的列名 **desc/asc**    高到低/低到高  降序/升序
     * 例: ORDER BY   shop\_price     desc   ;     按价格降序  高价到低价
     * 例:  **ORDER BY shop\_price  asc  ,  cat\_id  desc;**    首先按照shop\_price 进行升序排序, _**如果 shop\_price出现相同的列, 那么再按照 desc排序**_,   shop 在前面,优先级高,    cat\_id 在后面, 优先级低.
-*  LIMIT 限制结果条数
+*  LIMIT 限制结果条数  \(_**作用在查询结果上,也就是说上面所有子句都已经生效并且执行完毕**_\)
   * LIMIT   2;    只展示从0 开始的 前2 条信息.
   * LIMIT  0,3;   只展示从0开始的 前3条信息
   * LIMIT   3,2;    跳过前三个, 只展示两条结果,  就是第 4 个和第 5 个.
