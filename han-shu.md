@@ -29,6 +29,7 @@
 * **MAX\(col\)**   返回指定的列的最大值
 * **SUM\(col\)**   返回指定列的所有值之和
 * _**GROUP\_CONCAT\(col, str\)**_   将col的结果打印在一起,并且使用字符str进行分隔, 默认是 逗号,
+* **DISTINCT\(列名称   \)**  关键词 DISTINCT 用于返回唯一不同的值,他会忽略掉指定列中相同的值.
 
 ### 字符串函数
 
@@ -73,6 +74,7 @@
 * quarter\(  date\)    返回date 在一年中的季度  \(1~4\)  , 如: SELECT quarter\( current\_date\);
 * _**week \(date\)    返回日期 date 为一年中第几周\( 0 ~53\)**_
 * year \(date\)    返回日期date 的年份 \(1000~ 9999\)
+* datediff\(date1, date2\)   返回两个日期的差值\(包括所有和时间有关的类型: 日期,时间,分钟,小时,纳秒....\), 可以用来判断;    datediff\(da1,da2\) =1; 查找两个日期差值为1的;
 * **一些示例:**
   * 获取当前系统时间:    
     * mysql&gt;  SELECT FROM UNIXTIME\( UNIX\_TIMESTAMP\(\)\);
