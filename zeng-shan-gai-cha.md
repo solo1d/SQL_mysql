@@ -165,8 +165,6 @@ mysql> ALTER TABLE 表名  DROP INDEX 索引名;   # 两个命令都是删除. �
 mysql>  ALTER TABLE 表名  DROP PRIMARY key;     #因为主键没有名字,所以不用写
 
 
-
-
 ```
 
 
