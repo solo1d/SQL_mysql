@@ -92,7 +92,7 @@
 * _**AVG\(列\)     将这一行的和取平均值  返回.**_
   * mysql&gt;  SELECT  AVG\(shop\_price\) AS  p   FROM stu;
 
-### 约束和索引以及主键     \(建立和添加索引可以加快查询效率\)
+### 约束和索引以及主键 外键    \(建立和添加索引可以加快查询效率\)
 
 * _**primary key     主键  唯一而不为空,而且不能出现重复值!!!**_
   *   **创建时建立主键以及自动增长**
@@ -117,8 +117,14 @@
   * mysql&gt;  _CERATE  TABLE  表名  \(Id int  not null default 0\) ENGINE Innodb CHARSET UTF8;_
 * _**default      修饰列类型使用,  给一个默认初始化值**_
   * mysql&gt;  _CERATE  TABLE  表名  \(Id int  not null default 0\) ENGINE Innodb CHARSET UTF8;_
+* _**check\(\)     限制设定的列的取值范围,  代表他只能设置为 后面的值的属性范围内.\(MYSQl下无效\)**_
+  * _mysql&gt;_  
 * _**显示表内已经存在索引**_
   * mysql&gt;  SHOW  INDEX FROM 表名;   \# 可以添加 /G 参数来更具体化的显示\(不适合程序\)
+* _**外键, 想在一个表添加外键,那么必须有另外一个主表,而且只能引用主表的主键.\(两个表的 外键和主键的 属性相同\) , 把外键看成引用就行了**_
+  * 设置外键
+    * mysql&gt;  CREATE TABLE  表名 \(  id int  ,  sid int  REFERENCES 主表名\(主键列\)\); 
+  * **删除 主表的时候, 需要先删除 所有的外键表.否则会造成 主表无法删除.**
 
 ### 多表联查
 

@@ -12,7 +12,7 @@
 * [数值类型 和 列类型](lie-lei-xing-jian-biao-gui-fan.md)
 * [表规范 和 列规范](jian-biao-gui-fan-he-lie-lei-xing.md)
 * [增删改查](zeng-shan-gai-cha.md)
-* [索引的概念和操作以及约束](suo-yin.md)
+* [索引和约束以及主键](suo-yin.md)
 * [函数](han-shu.md)
 * [视图view](shi-tu-view.md)
 * [SQL优化](sql-you-hua.md)

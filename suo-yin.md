@@ -2,7 +2,7 @@
 description: '多列索引, 冗余索引'
 ---
 
-# 索引的概念和操作以及约束
+# 索引和约束以及主键
 
 ## 索引的作用与类型
 
@@ -107,15 +107,49 @@ mysql>  ALTER TABLE 表名  DROP PRIMARY key;     #因为主键没有名字,所�
 mysql> ALTER TABLE 表名  CHANGE  原列名   新列名  新属性;   #两个列名可以相同
 ```
 
-### 表的约束\(5种\)
+## 表的约束\(5种\)
 
-* 检查
-* 非空
-* 唯一
-* 外健\(非空 加 唯一\)
-* 外键
+* 检查 
+  * check\(\)
+* 非空  
+  * not null
+* 唯一 
+  *  unique  key 索引名\(列\)
+* 主健\(非空 加 唯一\)    
+  * primary key 
+* 外键   
+  * REFERENCES 表名\(列\)
 
+### 约束  check 
 
+```sql
+# 关键字 check 设定必须要在列属性的最后
+mysql> CREATE TABLE 表 (
+        ID int PRIMARY KEY AUTO_INCREMENT,
+        sex  char(1) NOT NULL CHECK ( price IN('男','女')) 
+        )ENGINE INNODB DEFAULT CHARSET UTF8;
+#  check 关键字后面跟的是对应这一列的 的值的限制约束, 可以进行 集合和各种运算限制
+# 目前mysql 下 无效.
+```
 
+### 外键必须引用头表的主键,  如果不是主键,则没有资格当外键.
 
+#### 设置外键:外键关键字必须在列属性的最后!!!
+
+```sql
+# 关键字 在列后面,  REFERENCES  外键关联的表( 关联表的列名)
+mysql> CREATE TABLE 表  (
+        Id  int PRIMARY KEY AUTO_INCREMENT,   #主键
+        name   varchar(10) NOT NULL default '', 
+        inst   int  NOT NULL REFERENCES class(sid)  #外键,sid是class表的主键
+        ) ENGINE INNODB DEFAULT CHARSET UTF8;       # 注意顺序
+```
+
+### 外键删除方式
+
+#### 删除 主表的时候, 需要先删除 所有的外键表.否则会造成 主表无法删除.
+
+* casecade  级联删除, 主表记录删除的时候,子表数据跟着删除
+* set null   设置为null  ,  主表删除的时候,  字表 外键 字段设为null
+* 默认方式,  主表删除的时候, 如果字表引用了该字段的数据, 不能删除.
 

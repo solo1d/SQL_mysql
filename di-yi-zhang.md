@@ -100,7 +100,7 @@ description: '里面的语句有些过时,不适合Mysql,  只适合 SQLserver 2
 * 非空：not null 
 * 惟一：unique 
 * 默认：default\(\) 
-* 检查：check\(\) 
+* 约束：check\(\)
 * 外键：foreign key\(列名\)   references 表名\(列名\)
 
 
