@@ -1,25 +1,25 @@
 # 函数
 
-## 所有函数\(面试会考 时间日期函数, 控制流函数,字符串函数\)
+## 所有函数\(面试会考 时间日期函数, 控制流函数,字符串函数,转换函数\)
 
 ### 数学函数
 
 * _**abs \(X\)**_ ****   返回 x 的绝对值
-* bin \(x\)      返回x 的二进制 \(oct返回 八进制 , hex返回十六进制\)
-* ceileing\(x\)    返回大于x的的最小整数值, 如果数字有小数部分,那么直接进位, 3.3 -&gt; 4
+* _**bin \(x\)      返回x 的二进制 \(oct返回 八进制 , hex返回十六进制\)**_
+* _**ceileing\(x\)    返回大于x的的最小整数值, 如果数字有小数部分,那么直接进位, 3.3 -&gt; 4**_
 * exp\(x\)       返回值e \(自然对数的底\) 的x次方
 * _**floor\(x\)**_    返回小于x的最大整数值, 并且删除后面的小数.
 * greatest\(x1,x2 ..... xn\)    返回集合中的最大值
 * least\(x1,x2, ...... xn\)     返回集合中最小的值
 * in\(x\)      返回x的自然对数
 * _**log\(x,y\)**_   返回x的以y为低的对数
-* mod\(x,y\)     返回x/y 的模 \(余数\)
+* _**mod\(x,y\)     返回x/y 的模 \(余数\)**_
 * pi\(\)  返回pi的值
 * _**rand\(\)**_  返回0 到1 内的随机值, 可以通过提供一个参数\(种子\) 使rand\(\) 函数随机生存一个指定的值
-* round\(x,y\)   返回参数x的四舍五入的有 y 位小数的值
+* _**round\(x,y\)   返回参数x的四舍五入的有 y 位小数的值, 可以把 y 设置为负数,来舍入整数位.**_
 * sign\(x\)   返回代表数字x的符号的值
 * sqrt\(x\)  返回一个数的平方根
-* truncate\(x,y\)    返回数字x截断为y位 小数的结果
+* _**truncate\(x,y\)    返回数字x截断为y位 小数的结果**_
 
 ### 聚合函数 \(常用于 GROUP BY 从句的 SELECT 查询中\) 也称 统计函数
 
@@ -34,59 +34,68 @@
 ### 字符串函数
 
 * _**ascii \(char\)**_   返回字符的 ASCII 码值
-* bit\_l-ength \(str\)  返回字符串的比特长度
-* concat \(s1,s2,.....sn\)   将s1,s2 .... sn   连接成字符串
-* concat\_ws \(sep,s1,s2 .... sn\)   将s1s2,.....sn 连接成字符串, 并用 sep字符间隔
-* insert \(str,x,y,instr\) 将字符串 str 从第x 位置开始, y个字符长的淄川替换成字符串instr,返回结果
+* bit\_length \(str\)  返回字符串的比特长度
+* _**concat \(s1,s2,.....sn\)   将s1,s2 .... sn  字符串.  连接成一个新的字符串.并且返回结果.**_
+* _**concat\_ws \(sep,s1,s2 .... sn\)   将s1s2,.....sn 连接成字符串, 并用 sep字符间隔**_
+* _**char\_length\(str\)    返回字符串 str 中有几个字符, \(个数\),    等价于  strlen\(\)    C函数.**_
 * find\_in\_set \(str,list\)   分析逗号分隔符的list列表,  如果发现 str, 就返回 str 在 list 中的位置
+* _**insert \(str,x,y,instr\) 将字符串 str 从第x 位置开始, y个字符长的淄川替换成字符串instr,返回结果**_
+* _**instr \( str1 , str2 \);   判断str2 是否在 str1 中存在, 如果存在,返回位置, 如不存在,则返回0**_
+* initcap\(str\)       首字母大写
 * lcase \(str\) 或 lower \(str\)   返回将字符串str中所有字符改变为小写的返回结果
 * _**left\(str, x\)   返回字符串 str 中最左边的 x 个字符**_
 * _**length \(str\)   返回字符串 str 中的字节长度\(字节\).  等价于  sizeof\(\)  C宏**_
-* _**char\_length\(str\)    返回字符串 str 中有几个字符, \(个数\),    等价于  strlen\(\)    C函数.**_
 * ltrim\(str\)    从字符串str 中切掉开头的空格
+* _**lower\(str\)        返回将字符串变成小写的结果**_
+* _**lpad \(str, len , char\);     返回 len 总长度的字符串, 如果 str 长度不够, 则在左侧 使用char 字符填充 到足够多的个数.**_
 * _**position \(substr   IN   str\)     返回字串substr 在字符串 str 中第一次出现的位置. 需要 IN 来连接. 从1 开始数.**_
 * quote\(str\)  用反斜杠转义 str中的单引号
 * repeat\(str, x\)   返回字符串 str 重复 x 次的结果
+* _**replace\(str1 ,   str2 \)  ;   在str1 中寻找 str2 相同的值. 然后删除str2那部分, 相当于: replace\('as',s',  '' \);**_
+* _**replace\(str1, str2 , str3\) ;    在str1 中寻找与 str2相同的串, 然后将str2相同的部分替换为 str3 .**_
 * _**reverse \(str\)   反转str 字符串的内容,然后输出,  例子:   'abcde'  ---&gt;   'edcba**_
 * _**right\(str, x\)    返回字符串最右边的x 个字符**_
 * rtrim\( std\)      返回字符串 str 尾部的空格
-* strcmp \( s1,s2\)    比较字符串 s1 和 s2
-* trim\(str\)   去除字符串首部和尾部的所有空格
-* ucase\(str\)  或  upper\(str\)   返回将字符串 str 中所有字符转变为大写后的结果
+* _**rpad\(srt, len ,char\);     返回 len 总长度的字符串, 如果 str 长度不够, 则在右侧 使用char 字符填充 到足够多的个数.**_
+* _**strcmp \( s1,s2\)    比较字符串 s1 和 s2, 相等返回0, 不相等则返回1**_
+* _**trim\(str\)   去除字符串首部和尾部的所有空格**_
+* _**ucase\(str\)  或  upper\(str\)   返回将字符串 str 中所有字符转变为大写后的结果**_
+* _**substr\(str, pos, len\) ;  截取字符串,以及设置位置和截取长度,然后输出; \# substr\('asd',1\) 表示选择全部,  subsrt\('asd',1,2\) 选择两个,从第一个开始算 'as'.  substr\('asdf',-2\)  从尾部开始 选择两个 ‘df‘  ;**_
 
 ### 日期和时间函数  \(重点\)
 
-* _**curdate\(\)  或 current\_date\(\)   返回当前的日期 data 格式,   21:21:11**_
-* _**curtime\(\) 或  current\_time\(\)   返回当前的时间  time 格式   2019-05-09**_
-* date\_add\( date, interval int keyword\)  返回日期 date 加上间隔时间 int 的结果, \(int 必须按照关键字进行格式化\) 如 :  select date\_add\(current\_date, interval 6 month\);
-* date\_format\( date , fmt\)  依照指定的 fmt 格式  ,格式化日期 date值
-* date\_sub \( date, interval int ketwork\)  返回日期date  减去间隔时间  int 的结果 , \( int 必须按照关键字进行格式化\)  如 : select date date\_sub\( current\_date, interval 6 month\);
+* _**curdate\(\)  或 current\_date\(\)   返回当前的日期 data 格式,   2019-05-14**_
+* _**curtime\(\) 或  current\_time\(\)   返回当前的时间  time 格式  21:21:11**_
+* _**date\_add\( date, interval int keyword\)  返回日期 date 加上间隔时间 int 的结果, \(int 必须按照关键字进行格式化\) 如 :**_   SELECT DATE\_ADD\(current\_date\(\),INTERVAL 1 YEAR\);   \#当前日期,加上一年.
+* _**date\_format\( date , fmt\)  依照指定的 fmt 格式  ,格式化日期 date值**_
+* _**date\_sub \( date, interval int ketwork\)  返回日期date  减去间隔时间  int 的结果 , \( int 必须按照关键字进行格式化\)  如 :**_  SELECT DATE\_SUB\(current\_date\(\),INTERVAL 1 YEAR\);   \#当前日期,减去一年.
 * _**dayofweek\(date\)   返回date所代表的一星期中的第几天\( 1~7\), 周日是第一天 ,date格式\('2019-03-03'\)**_
 * _**dayofmonth\(date\)   返回date 是一个月的第几天\(  1 ~31\)**_
 * _**dayofyear \(date\)   返回date  是一年的第几天 \(1 ~ 366\)**_
 * _**dayname\(date\)    返回 date的星期名,  如:  SELECT dayname\(current\_date\);**_
+* _**datediff\(date1, date2\)   返回两个日期的差值\(包括所有和时间有关的类型: 日期,时间,分钟,小时,纳秒....\), 可以用来判断;    datediff\(da1,da2\) =1; 查找两个日期差值为1的;**_
 * _**from\_unixtime\( fs, fmt\)   根据指定的 fmt格式, 格式化unix时间戳  ts**_
-* hour\(time\)    返回 time的小时值 \(0~23\)
-* minute\(time\)   返回time的分钟值 \( 0~ 59\)
-* month\( date\)    返回 date  的月份值 \(1~12\)
-* monthname\(date\)    返回date 的月份名, 如: SELECT monthname \(current\_date\);
+* _**hour\(time\)    返回 time的小时值 \(0~23\)**_
+* _**minute\(time\)   返回time的分钟值 \( 0~ 59\)**_
+* _**month\( date\)    返回 date  的月份值 \(1~12\)**_
+* _**monthname\(date\)    返回date 的月份名, 如: SELECT monthname \(current\_date\);**_
 * _**now\(\)    返回当前的日期和时间,  格式是datetime,    ' 2019-05-09 21:21:11 '**_
 * quarter\(  date\)    返回date 在一年中的季度  \(1~4\)  , 如: SELECT quarter\( current\_date\);
+* _**sysdata\(\)      返回当前日期和时间.**_
 * _**week \(date\)    返回日期 date 为一年中第几周\( 0 ~53\)**_
-* year \(date\)    返回日期date 的年份 \(1000~ 9999\)
-* datediff\(date1, date2\)   返回两个日期的差值\(包括所有和时间有关的类型: 日期,时间,分钟,小时,纳秒....\), 可以用来判断;    datediff\(da1,da2\) =1; 查找两个日期差值为1的;
+* _**year \(date\)    返回日期date 的年份 \(1000~ 9999\)**_
 * **一些示例:**
-  * 获取当前系统时间:    
+  * _**获取当前系统时间:**_    
     * mysql&gt;  SELECT FROM UNIXTIME\( UNIX\_TIMESTAMP\(\)\);
     * mysql&gt;  SELECT EXTRACT\(year\_month  FROM current\_date\);
     * mysql&gt;  SELECT EXTRACT\( day\_second FROM  current\_date\);
     * mysql&gt;  SELECT EXTRACT\( hour\_minute  FROM   current\_date\);
-  * 返回两个日期值之间的差值\( 月数\) :
-    * mysql&gt;  SELECT period  diff\(200302, 199802\);
-  * 在mysql 中计算年龄:
+  * _**返回两个日期值之间的差值\( 月数\) :**_
+    * mysql&gt;  SELECT datediff\(200302, 199802\);
+  * _**在mysql 中计算年龄:**_
     * mysql&gt;  SELECT DATE\_FORMAT\( FROM\_DAYS\(TO\_DAYS\(NOW\(\)\) - TO\_DAYS\(birthday\)\), '%y'\) +0 AS age FROM employee;
       * 这样. 如果  birthday  参数是 未来年月日的话, 结算结果为 0 
-  * 下面的sql 语句计算员工的绝对年龄 , 即当 birthday 是未来的日期时, 将得负值:
+  * _**下面的sql 语句计算员工的绝对年龄 , 即当 birthday 是未来的日期时, 将得负值:**_
     * SELECT DATE\_FORMAT\(NOW\(\), '%y' \) - DATE\_FORMAT\( birthday \)\), '%y' \) - \(DATE\_FORMAT\(NOW\(\), '00-%m-%d'\) &lt; DATE\_FORMAT\(birthday, '00-%m-%d'\)\) AS age FROM employee;
 
 ### 加密函数
@@ -185,29 +194,31 @@ mysql> SELECT if(encrypt('sue','ts')=upass, 'allow','deny') AS loginresultfrom u
 
 ### 格式化函数
 
-* date\_format\(date,fmt\)    依照字符串 fmt格式化日期 date值
-* format\(x,y\)    把x格式化为以逗号隔开的数字序列, y是结果的小数位数
-* inet\_auon\(ip\)    返回ip地址的数字表示
-* inet\_ntoa\(num\)    返回数字所代表的ip地址
-* time\_format\(time ,fmt\)    依照字符串 fmt 格式化时间time 值.
-* format\(number\)    它可以把大的数值格式化为以逗号间隔的易读的序列. 例: 100,203
-* 示例:
-  * mysql&gt; SELECT format \(34234 .342332 ,3 \):
-  * mysql&gt; SELECT date\_format\(now\(\), '%w, %d,%m,%y,%r' \);
-  * mysql&gt; SELECT date\_format\(now\(\), '%y-%m-%d'\);
-  * mysql&gt; SELECT date\_format\(19990330, '%y-%m-%d'\);
-  * mysql&gt; SELECT date\_format\(now\(\) , '%h:%i %p'\);
-  * mysql&gt; SELECT inet\_aton\('192.168.1.2'\);
-  * mysql&gt; SELECT inet\_ntoa\( 175790383\);
+* _**date\_format\(date,fmt\)    依照字符串 fmt格式化日期 date值**_
+* _**format\(x,y\)    把x格式化为以逗号隔开的数字序列, y是结果的小数位数**_
+* _**inet\_auon\(ip\)    返回ip地址的数字表示**_
+* _**inet\_ntoa\(num\)    返回数字所代表的ip地址**_
+* _**time\_format\(time ,fmt\)    依照字符串 fmt 格式化时间time 值.**_
+* _**format\(number\)    它可以把大的数值格式化为以逗号间隔的易读的序列. 例: 100,203**_
+* _**示例:**_
+  * _**mysql&gt; SELECT format \(34234 .342332 ,3 \):**_
+  * _**mysql&gt; SELECT date\_format\(now\(\), '%w, %d,%m,%y,%r' \);    \# w星期,d天,m月,y年,r时间**_
+  * _**mysql&gt; SELECT date\_format\(now\(\), '%y-%m-%d'\);**_
+  * _**mysql&gt; SELECT date\_format\(19990330, '%y-%m-%d'\);**_
+  * _**mysql&gt; SELECT date\_format\(now\(\) , '%h:%i %p'\);**_
+  * _**mysql&gt; SELECT inet\_aton\('192.168.1.2'\);**_
+  * _**mysql&gt; SELECT inet\_ntoa\( 175790383\);**_
 
 ### 类型转换函数
 
 ```sql
 # 为了进行数据类型转化, mysql 提供了 cast() 函数, 它可以把一个值转化为指定的数据类型,
 # 类型有: binary , char  , date , time , datetime,  signed , unsigned 
+#          cast( 被转换的值 AS  转换的类型) 
 # 示例:
-mysql> SELECT cast(now() AS signed integer ) , curdate() +0;
+mysql> SELECT cast(now() AS signed integer ) , curdate() +0; 
 mysql> SELECT 'f'=binary 'f', 'f'=cast('f' AS binary);
+
 ```
 
 ### 系统信息函数
