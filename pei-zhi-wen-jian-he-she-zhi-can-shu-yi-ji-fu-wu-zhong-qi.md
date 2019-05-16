@@ -37,3 +37,13 @@ mysql  Ver 15.1 Distrib 10.1.37-MariaDB, for debian-linux-gnueabihf \(armv8l\) u
 
 7. 完成:
 
+## 组合拳
+
+通过这种方式来重启mysql服务器, 在他不工作的时候来重启他.
+
+* 通过root 用户来执行命令
+* 切换到mysql的虚拟用户  \#su mysql
+* 然后使用 $ ps  -u mysql    来找到mysqld 这个进程,记录下这个守护进程的PID
+* 干掉这个进程   $ kill -9   PID
+* 再回到root下   \#service mysql  restart   重启这个服务,.
+

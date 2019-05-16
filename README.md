@@ -2,6 +2,8 @@
 
 ## 数据库学习笔记
 
+数据库对象:  表, 视图,  索引, 序列 ,  同义词, 存储过程,  存储函数,  触发器,  包, 包体, 数据库链路, 快照. 
+
 ### 关键顺序
 
 #### 书写顺序\(执行顺序\):    SELECT\(5\)    FROM\( 1\)     WHERE \(2\)      GROUP BY\(3\)       HAVING\(4\)     ORDER BY\(6\)     LIMIT \(7\)
@@ -137,11 +139,126 @@
   * mysql&gt;  SELECT student.name,teachar.name FROM student INNER JOIN teachar ON sid=id;
 * _**合并  UNION      ,  两个表的取出的数据类型以及个数必须相同.   默认合并相同行,  ALL 参数则不合并**_
   * mysql&gt;   SELECT name,id   FROM student     UNION    SELECT name,sid FROM teacher ;
-  * mysql&gt;   SELECT name,id   FROM student    UNION ALL   SELECT name,sid FROM teacher;
+  * mysql&gt;   SELECT name,id   FROM student    UNION ALL   SELECT name,sid FROM teacher; 
+
+### 序列
+
+#### 内部原理其实就是一个数据结构, 有两个int的值来标识当前下标和下一个节点,默认第一个Int指向空,第二个是第一个数据.
+
+#### 创建序列 : mysql 内没有序列, 需要使用自增类型来进行别样实现.
 
 
 
+### 视图
 
+**创建和删除视图 : 一般用在隔离数据访问.**
+
+```sql
+# 视图是创建一个已有的表的一个投影,本身并没有数据, 他会随着主表的变化而变化, 
+# 而且有时候视图也可以影响表的变化当视图和主表内容和字段完全相同时, 增删改查就可以影响到主表了.
+# 视图的列和主表可以不同,可以添加和修改 以及运算. 视图本身没有数据, 它依赖于主表.
+# 假设主表是  goods.   列 ID,name
+mysql>  CREATE VIEW 视图表名
+        AS 
+        SELECT ID,name,ID*2 AS sid 
+        FROM goods;
+
+# 删除视图
+mysql> DROP VIEW 视图表名;
+```
+
+### 同义词
+
+#### 作用是  简化查询, 隔离访问. 跟设置权限差别不大
+
+#### 因为mysql没用同义词,  需要使用   设置用户对某张表的权限来实现同义词
+
+```sql
+# 首先给用户对某个表的 特定的权限
+
+mysql> GRANT 权限SELECT,INSERT ON 表 to 用户;
+
+# 使用GRANT 关键字来设置对表的权限,  INSERT,SELECT,UPDATE 
+# 后面跟着是表名 和  需要被设置的用户.
+```
+
+## ysql 用户创建和权限
+
+### 创建用户
+
+```sql
+mysql> CREATE USER 'username'@'host' IDENTIFIED BY 'password';
+
+# username：你将创建的用户名
+# host：指定该用户在哪个主机上可以登陆，如果是本地用户可用localhost，
+#    如果想让该用户可以从任意远程主机登陆，可以使用通配符%
+# password：该用户的登陆密码，密码可以为空，如果为空则该用户可以不需要密码登陆服务器
+# 例子：
+
+mysql> CREATE USER 'dog'@'localhost' IDENTIFIED BY '123456';
+mysql> CREATE USER 'pig'@'192.168.1.101_' IDENTIFIED BY '123456';
+mysql> CREATE USER 'pig'@'%' IDENTIFIED BY '123456';
+```
+
+### 权限
+
+```sql
+mysql> GRANT privileges ON databasename.tablename TO 'username'@'host';
+# privileges：用户的操作权限，如SELECT，INSERT，UPDATE等，如果要授予所的权限则使用ALL
+# databasename：数据库名
+# tablename：表名，如果要授予该用户对所有数据库和表的相应操作权限则可用*表示，如*.*
+# 例子
+mysql> GRANT SELECT, INSERT ON test.user TO 'pig'@'%';
+mysql> GRANT ALL ON *.* TO 'pig'@'%';
+
+# 注意:
+# 也就是说, 自己的权限是从其他用户授权来的, 而我的权限是我不能在分发给别人的.
+# 用以上命令授权的用户不能给其它用户授权，如果想让该用户可以授权，用以下命令:
+
+mysql> GRANT privileges ON databasename.tablename TO 
+        'username'@'host' WITH GRANT OPTION;
+```
+
+### 设置与更改用户密码
+
+```sql
+# 使用root来修改其他用户的密码
+mysql> SET PASSWORD FOR 'username'@'host' = PASSWORD('newpassword');
+
+#如果是当前登陆用户用:
+mysql> SET PASSWORD = PASSWORD("newpassword");
+
+#例子
+mysql> SET PASSWORD FOR 'pig'@'%' = PASSWORD("123456");
+```
+
+### 撤销用户权限
+
+```sql
+mysql> REVOKE privilege ON databasename.tablename FROM 'username'@'host';
+# privilege, databasename, tablename：同授权部分
+
+#例子
+mysql> REVOKE SELECT ON *.* FROM 'pig'@'%';
+
+#注意:
+#假如你在给用户'pig'@'%'授权的时候是这样的（或类似的）：
+#    mysql> GRANT SELECT ON test.user TO 'pig'@'%';
+#   则在使用REVOKE SELECT ON *.* FROM 'pig'@'%';
+#   命令并不能撤销该用户对test数据库中user表的SELECT 操作。
+#   相反，如果授权使用的是GRANT SELECT ON *.* TO 'pig'@'%';
+#   则REVOKE SELECT ON test.user FROM 'pig'@'%';
+#   命令也不能撤销该用户对test数据库中user表的Select权限。
+# 具体信息可以用命令SHOW GRANTS FOR 'pig'@'%'; 查看。
+```
+
+### 删除用户
+
+```sql
+mysql> DROP USER 'username'@'host';
+
+# 用户名 和登录方式
+```
 
 
 
