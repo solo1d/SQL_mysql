@@ -1,5 +1,15 @@
 # API编程
 
+## 点击进入 [官方参考手册](https://dev.mysql.com/doc/refman/8.0/en/c-api-functions.html)
+
+## 需要的头文件和库,以及编译指令
+
+需要的头文件有 mysql.h   ,静态库有 libmysqlclient.a   \(去服务器上面拿取\), 将这两个文件和原文件放在一起
+
+编译指令: gcc 源代码.c   -i 头文件绝对路径   -L动/静 态库绝对路径   -l动/静态库名字
+
+例子:    gcc  my.c  -i /Users/ns/mysql\_c   -L/Users/ns/mysql\_c    -l mysqlclient 
+
 ## 首先要做的就是登入和退出mysql
 
 #### 句柄: 句柄是一种特殊的智能指针 。当一个应用程序要引用其他系统（如数据库、操作系统）所管理的内存块或对象时，就要使用句柄。
@@ -29,4 +39,33 @@ void mysql_close(MYSQL *mysql)
    //        也就是说这个函数应该调用两次,来分别释放两个值.
    //它会关闭句柄和连接
 ```
+
+### 插入操作
+
+```c
+# 执行SQL语句函数 : 因为只能返回0 和非0, 所以适合插入操作 
+int mysql_query(MYSQL *mysql, const char *stmt_str)
+   //参数:  mysql 连接句柄,
+   //      stmt_str   SQL语句, 不能包含 分号 ; 和 \G 参数,而且不可以出现二进制数据的语句, 
+   //                只能执行一条sql语句 (服务器如果设置了多条执行,那么可以用分号 ; 连接多个sql语句)
+   //返回值:  查询成功返回0, 失败或错误返回非0值.
+```
+
+### 查询操作
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
