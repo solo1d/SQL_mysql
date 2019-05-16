@@ -40,7 +40,7 @@ void mysql_close(MYSQL *mysql)
    //它会关闭句柄和连接
 ```
 
-### 插入操作
+### 执行语句
 
 ```c
 # 执行SQL语句函数 : 因为只能返回0 和非0, 所以适合插入操作 
@@ -53,9 +53,61 @@ int mysql_query(MYSQL *mysql, const char *stmt_str)
 
 ### 查询操作
 
+#### 这个操作分为三步,  执行查询语句,取得结果集, 处理结果集
+
+```c
+#实现查询之前,需要先执行执行语句  mysql_query() ,得到查询的结果集  
+    mysql_query(mysql, 查询语句  SELECT .... );   # 确定它的返回值是0 .是正确的
+    
+#下面是拿到结果集操作
+MYSQL_RES *mysql_store_result(MYSQL *mysql)
+    //参数: 以及和数据库建立连接的句柄.
+    //返回值:  MYSQL_RES 结构指针, 这个函数主要是为了拿到这个结果集, 失败返回NULL
+    // 如果返回值不是NULL, 那么就可以调用 mysql_num_rows() 来找出结果集中的行数
+    //  还可以调用 mysql_fetch_row()
+    // 当结果集使用完成后,必须使用 mysql_free_result() 释放MYSQL_RES 结果集.
+
+# 获取行
+MYSQL_ROW mysql_fetch_row(MYSQL_RES *result)
+    //参数:  mysql_store_result() 返回的结构体 MYSQL_RES
+    //返回值: typedef char **MYSQL_ROW;  就是一个二级char指针.
+    //
+
+#释放结果集操作  ---- 在下面
 
 
+----------------------------------------------------
+# MYSQL_RES 结构体
+typedef struct MYSQL_RES {
+  my_ulonglong row_count;    /* 查询结果的行的 个数*/
+  MYSQL_FIELD *fields;       /* */
+  struct MYSQL_DATA *data;   /* */
+  MYSQL_ROWS *data_cursor;   /* */
+  unsigned long *lengths;    /* 当前行的列长度 */
+  MYSQL *handle;             /* 对于无缓冲的读取 */
+  const struct MYSQL_METHODS *methods;    /* */
+  MYSQL_ROW row;             /* 没有缓冲区的读取 */
+  MYSQL_ROW current_row;     /* 缓冲区到当前行 */
+  struct MEM_ROOT *field_alloc;  /* */
+  unsigned int field_count, current_field;   /* */
+  bool eof;              /*  */  
+  bool unbuffered_fetch_cancelled;    /* */
+  enum enum_resultset_metadata metadata;     /* */
+  void *extension;      /* */
+} MYSQL_RES;
 
+----------------------------------------------------
+
+
+```
+
+### 释放结果集
+
+```text
+mysql_free_result()释放分配给组由结果的内存 
+    mysql_store_result()， mysql_use_result()， mysql_list_dbs()，等等。
+完成结果集后，必须通过调用释放它使用的内存 mysql_free_result()。
+```
 
 
 
