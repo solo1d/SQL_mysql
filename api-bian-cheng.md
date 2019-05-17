@@ -53,7 +53,15 @@ int mysql_query(MYSQL *mysql, const char *stmt_str)
 
 ### 查询操作
 
-#### 这个操作分为三步,  执行查询语句,取得结果集, 获取列的个数,获取行数据,处理结果集
+#### 这个操作分为以下几步
+
+* mysql\_query\(\)     首先执行查找sql语句
+* mysql\_store\_result\(\)       拿到返回的结果集
+* mysql\_num\_fields\(\)       得到表内列的个数
+* mysql\_fetch\_row\(\)        得到行数据\( 也就是表数据 \) 
+* mysql\_fetch\_fields\(\)       获得表头, 也就是列名称
+* 按照循环的方式 ,以 行数据为基础, 列个数为循环次数, 通过二维数组来获得 行数据.
+* mysql\_free\_result\(\)    释放结果集 ,  结束
 
 ```c
 #实现查询之前,需要先执行执行语句  mysql_query() ,得到查询的结果集  
@@ -187,13 +195,22 @@ int mysql_set_character_set(MYSQL *mysql, const char *csname)
 
 ### 预处理
 
-```text
+#### 主要是为了提高效率
 
-```
+#### 如果程序只进行很少量的sql语句,那么就不值得用预处理.
+
+* mysql\_stmt\_init\(\)         预处理初始化
+* mysql\_stmt\_prepare\(\)       sql语句预处理
+* mysql\_stmt\_bindparam\(\)    绑定变量
+  * 赋值
+* mysql\_stmt\_exectue\(\)   预处理sql执行
+  * 回到绑定变量的赋值.  \(循环重复赋值这一步\)
+
+很少用到,多多参考[官方文档](https://dev.mysql.com/doc/refman/8.0/en/c-api-prepared-statement-function-overview.html)
 
 ## 程序范例
 
-#### 简单的查询和插入范例
+### 简单的查询和插入范例
 
 ```c
 #include <stdio.h>
