@@ -70,8 +70,8 @@ MYSQL_RES *mysql_store_result(MYSQL *mysql)
 # 获取行
 MYSQL_ROW mysql_fetch_row(MYSQL_RES *result)
     //参数:  mysql_store_result() 返回的结构体 MYSQL_RES
-    //返回值: typedef char **MYSQL_ROW;  就是一个二级char指针.
-    //
+    //返回值: typedef char **MYSQL_ROW;  就是一个二级char指针,指向一个二级数组.
+    //       如果数据多,需要循环取出. 在栈上,不需要释放.
 
 #释放结果集操作  ---- 在下面
 
@@ -103,7 +103,9 @@ typedef struct MYSQL_RES {
 
 ### 释放结果集
 
-```text
+```c
+void mysql_free_result(MYSQL_RES *result);
+
 mysql_free_result()释放分配给组由结果的内存 
     mysql_store_result()， mysql_use_result()， mysql_list_dbs()，等等。
 完成结果集后，必须通过调用释放它使用的内存 mysql_free_result()。
@@ -111,7 +113,75 @@ mysql_free_result()释放分配给组由结果的内存
 
 
 
+### 程序范例
 
+```c
+#include <stdio.h>
+#include <unistd.h>
+#include "mysql.h"
+#include <stdlib.h>
+#include <string.h>
+
+#define _HOST_ "192.168.1.110"      // 数据库ip地址    (免去了小端转大端的过程)
+#define _USER_  "root"              // 数据库登陆用户
+#define _PASSWD_  "123456"          // 密码
+#define _DBNAME_  "bilibili"        // 登陆的库
+
+int main(int argc, const char * argv[]) {
+    
+//初始化mysql对象
+    MYSQL* mysql1 = mysql_init(NULL);
+    if(mysql1 == NULL){
+        printf("init error \n");
+        exit(1);
+    }
+    
+//进行连接,如果成功则mysql 不为null
+     mysql1 = mysql_real_connect(mysql1, _HOST_, _USER_, _PASSWD_, _DBNAME_,0,NULL,0);
+    if(mysql1 == NULL){
+        printf("real_connect error \n");
+        exit(1);
+    }
+
+    printf("连接成功\n");
+    
+    char rSql [256] = {0};  //用来存放 sql 语句
+        
+    
+//sql语句执行函数, 执行了一次插入数据sql语句. 
+    strcpy(rSql,"INSERT INTO student (id,name,email,sex,sal,deptno) VALUES (3,'asd',
+            'mm@mm.com','男',10020,'3')");    // 将sql拷贝到 rSql数组内.
+    if( 0 != mysql_query(mysql1,rSql)){    //执行sql语句,判断返回值, 0表示成功, 非0失败.
+        printf("mysql_query err\n");
+        exit(1);
+    }
+
+//查询语句并取回结果集
+    strcpy(rSql,"SELECT * FROM student");   // 查询语句拷贝到rSql
+    if(mysql_query(mysql1,rSql) != 0){     // 执行sql语句
+        printf("mysql_query err  \n");
+        exit(1);
+    }
+    MYSQL_RES* result= mysql_store_result(mysql1);   //取结果, 值使用完成后需要释放
+    MYSQL_ROW  row;         // 这个值在栈上,不用释放.其内部是个二级指针,指向一个二级数组
+    int i = 0;            // 表中列的个数
+    if(result != NULL){    // 非NULL 就代表取到了数据.
+        //打印结果集
+        while( (row =  mysql_fetch_row(result)) != NULL){   //循环取一行,有多少行就循环多少次.
+            for(i=0; i<7 ;i++){                  // 这个7 代表是表有 7列. 就是7个字段
+                printf("%s\t",row[i]);    // 打印数据, 但是排版很乱
+            }
+            printf("\n");        //换行来区分行
+        }
+        mysql_free_result(result);   //释放 result结果集, 如果没有取到也就不用释放了,就是个NULL
+    }
+    
+
+    
+    mysql_close(mysql1);   //关闭连接
+    return 0;
+}    
+```
 
 
 
