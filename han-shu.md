@@ -190,6 +190,29 @@ mysql> SELECT fname,lname,(math+sci+lit) AS total,
         AS grade FROM marks;
 mysql> SELECT if(encrypt('sue','ts')=upass, 'allow','deny') AS loginresultfrom users 
         WHERE uname = 'sue';     # 一个登陆验证
+        
+        
+        
+#循环语句 while
+  while 条件 do
+     内容
+ end while;  #结束标志
+
+mysql> use test;
+mysql> delimiter $$;
+mysql> CREATE PROCEDURE  p_func()    # 这个版本 存储过程只是实现了简单循环语句
+        begin
+        declare i int default 1;
+        declare addresult  int default 0;
+        while i<100 do
+            SET addresult  = addresult + i;
+            SET i = i + 1;        
+        end while;
+        SELECT addresult;
+        end;
+        $$;
+        
+mysql> CREATE 
 ```
 
 ### 格式化函数

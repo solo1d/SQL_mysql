@@ -111,6 +111,76 @@ MySQL中使用DROP PROCEDURE语句来删除存储过程.
 mysql>   DROP PROCEDURE  p_hello;     #后面是存储过程名
 ```
 
+### 存储过程和流程控制语句中的选择语句
+
+```sql
+第一种:
+if 条件   then  条件为真执行这条语句  else  条件不为真执行这条语句   end if; #最后是结束标志
+第二种:
+if 条件1   then  条件为真执行这条语句  elseif  条件2  then  条件1不成立就判断条件2 为真执行这条语句
+          else  前面条件1 2 都不为真则执行这条语句   end if;
+第三种:
+case 条件判断的变量   when 变量的取值1  then  前面为真则执行这条语句2   when 变量的取值2 
+     then 前面为真则执行这条语句2  else 前面都不成立则执行这条语句  end;
+
+
+范例:
+mysql>  use test;
+mysql> delimiter $$;
+mysql> CREATE PROCEDURE p_showage( in age int)
+       begin
+         if  age >= 18  && age <60
+              then  SELECT '成年人';     #在这里必须添加分号
+         elseif age>=60 
+              then SELECT '老年人';     #注意分号
+         else
+              SELECT  '未成年人';        #这里也必须添加分号
+         end if;
+      end
+      $$;
+ mysql> delimiter ;
+ mysql> call p_showage(18);
+```
+
+#### case 语句分支: 可以出现在sql语句中, 也可以出现在 存储过程 内
+
+```sql
+第一种:
+case 条件判断的变量 when 变量的取值1 then 1的执行语句  when 变量的取值2  then 2的执行语句
+    else  以上条件都不为真时的执行语句   end case;
+
+#例子1:普通语句
+    mysql>  SELECT case age when 18 then '成年了'  when 12  then '未成年' else '不确定'
+            end case   from  student;
+
+#例子2: 存储过程 
+    mysql>  use test;
+    mysql> delimiter $$;
+    mysql> CREATE PROCEDURE  
+            p_date(in v_empno int)
+            begin
+            declare addS int;      # 定义一个局部变量addS, 类型是 int , 关键字 declare
+            case v_empno
+                when  1001
+                    then  SET addS=1500;
+                when  1002
+                    then  SET addS=2500;
+                when  1003
+                    then  SET addS=3200;
+                else
+                    SET addS=1000;
+                end case;
+            UPDATE goods SET price = addS WHERE  id = v_empno;  
+                    #上面的UPDATE 解释: goods是表名,有price和id两个列, 运行的结果是,
+                        #              找到 id 等于 v_empno的行 ,并将 price设置为 addS的值
+            end
+            $$;
+                
+
+```
+
+## 
+
 ## 还可以使用SET 设置一个局部变量来传入进去
 
 库作用域;
@@ -121,4 +191,6 @@ mysql>  SET @变量名字= 初始值 ;       #这个名字随便设置, 初始�
 mysql>  call p_hello(@变量名字);
 mysql>  SELECT @变量名字;        #这样可以直接打印这个变量的值.
 ```
+
+
 

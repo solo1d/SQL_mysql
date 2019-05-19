@@ -44,15 +44,15 @@ mysql> SET GLOBAL autoconnit = 'off';
     mysql>  CREATE PROCEDURE
             p_vartest1 ()
             begin
-            declare a varchar(20) default 'abc';    #定义局部变量a ,赋默认值
-            select  a;        # 输出和显示这个 局部变量a
+            declare a varchar(20) default 'abc';    #定义局部变量a ,赋默认值 ,关键字: declare
+            select  a;        # 输出和显示这个 局部变量a ,
             end 
             $$;
     #2.2 第二种, 不设置默认值, 使用SET 对局部变量赋值,然后输出显示局部变量
     mysql> CREATE PROCEDURE
             p_vartest2()
             begin
-            declare b int;
+            declare b int;    #定义一个局部变量
             SET b = 20;        #赋值为20
             end
             $$;
