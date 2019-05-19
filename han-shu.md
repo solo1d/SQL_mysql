@@ -193,6 +193,7 @@ mysql> SELECT if(encrypt('sue','ts')=upass, 'allow','deny') AS loginresultfrom u
         
         
         
+--------------------------------------------------------
 #循环语句 while
   while 条件 do
      内容
@@ -200,11 +201,11 @@ mysql> SELECT if(encrypt('sue','ts')=upass, 'allow','deny') AS loginresultfrom u
 
 mysql> use test;
 mysql> delimiter $$;
-mysql> CREATE PROCEDURE  p_func()    # 这个版本 存储过程只是实现了简单循环语句
-        begin
-        declare i int default 1;
-        declare addresult  int default 0;
-        while i<100 do
+mysql> CREATE PROCEDURE  p_func1()    # 这个版本 存储过程只是实现了简单循环语句
+        begin    
+        declare i int default 1;        #定义了一个变量i
+        declare addresult  int default 0;     #这也是一个变量
+        while i<=100 do
             SET addresult  = addresult + i;
             SET i = i + 1;        
         end while;
@@ -212,7 +213,78 @@ mysql> CREATE PROCEDURE  p_func()    # 这个版本 存储过程只是实现了�
         end;
         $$;
         
-mysql> CREATE 
+mysql> CREATE PROCEDURE  p_func2()   #第二个版本, 能够和表进行沟通和修改
+        begin
+        declare maxprice int default 0;   #变量maxmpno
+        declare i int default 0;
+        while i<=100 do
+            select MAX(price) INTO maxprice FROM goods;     #goods表, 有price列
+            SET maxprice = maxprice + 1;
+            INSERT INTO goods (price)  VALUES  (price);  #一条插入语句
+             SET i = i+1;          #这个条件增长很关键, 不要陷入死循环
+        end while;
+        end;
+        $$;
+
+mysql> delimiter ;
+mysql> call p_func1();   #调用
+mysql> call p_func2();   #调用
+
+
+
+--------------------------------------------------------
+# 循环语句   repeat
+repeat  
+    内容
+    until 条件    #推出循环的条件, 如成立,则推出 repeat循环, 注意 : 无分号
+end repeat;      # 内容块和 repeat结束
+
+mysql> use test;
+mysql> delimiter $$;
+mysql> CREATE PROCEDURE  R_func1()
+        begin
+        declare imin int default 1;
+        declare  i  int default 0;
+        SELECT MAX(price) INTO imit  FROM goods;
+        repeat
+            if imin % 2 = 0 then 
+                SELECT '成立';  
+            else SELECT  '不成立';
+            end if;
+            SET i = i + 1;    
+            until  imit > i    #判断条件, 如果imit 大于 i 则推出循环
+        end repeat;            #结束
+        end;
+        $$;
+
+mysql> delimiter ;
+mysql> call R_func1();   #调用
+
+
+--------------------------------------------------------
+# 循环语句
+自定义名字:loop      # 自定的名字 但是后面的冒号不能缺
+    内容
+    if 条件 then                #必须有个判断语句来调用这个推出语句.
+       leave loop 自定义名字;    # 这表示结束循环
+    end if;                    # if语句结束
+end loop;                      # 因为只有一个推出语句,所以这里只限制了 内容结束的范围
+
+mysql> use  test;
+mysql> delimiter  $$;
+mysql> CREATE PROCEDURE  L_func()
+        begin
+        declare i int default 0;
+        myloop:loop
+            if i % 3 = 0  then 
+                leave loop myloop;    #这里推出
+            else SELECT 'i%3!=0';
+            end if;
+        end loop;
+        end;
+        $$;
+mysql> delimiter ;
+mysql> call L_func(); 
 ```
 
 ### 格式化函数
