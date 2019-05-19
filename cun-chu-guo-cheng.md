@@ -6,6 +6,8 @@
 
 #### 存储过程是作用在选定的库上的
 
+#### 存储过程内一旦某个位置的内容执行错误, 那么从那里开始的后续内容是不会被执行的.  \(可以使用 定义条件和处理  来解决这种情况,让存储过程继续执行下去\)
+
 ### 优点
 
 * 存储过程增强了SQL语言的功能和灵活性
@@ -104,13 +106,6 @@ mysql> call  hello_p ;                  #无参数, 存储过程名是 hello_p
 mysql> call  hello_p(参数1,参数2);       #有参数的调用
 ```
 
-### 删除存储过程
-
-```sql
-MySQL中使用DROP PROCEDURE语句来删除存储过程.
-mysql>   DROP PROCEDURE  p_hello;     #后面是存储过程名
-```
-
 ### 存储过程和流程控制语句中的选择语句
 
 ```sql
@@ -179,7 +174,51 @@ case 条件判断的变量 when 变量的取值1 then 1的执行语句  when 变
 
 ```
 
-## 
+### 定义条件和处理
+
+#### 他会处理错误代码,而且忽略掉这个错误,继续向下执行代码.
+
+```sql
+declare continue handler for sqlstate '错误代码值'  SET 变量=变量值; #后面这个变量和值无所谓.
+    # 这条语句一定要在 begin 的下面.
+    # 但是在添加这段代码之前, 需要确定没有添加这段代码的'原代码' ,执行报错的错误码是多少.
+    # ERROR 1234 (要的是这个括号内的值) : xxxxxxxx
+
+#假设这段代码的'原代码' 报错,  错误信息是 ERROR 1064(42000) : You have an .....
+mysql>  CREATE PROCEDURE 
+        P_a()
+        begin
+        declare continue handler for sqlstate '42000'  SET @x = 1; #后面这个变量和值无所谓
+        SELECT * FROM goods1;     # 假设没有这张goods1 这个表, 那么这句话就会报错 1064(42000)
+        SELECT '执行完成';       # 有报错这里就不会被执行, 但是添加了条件处理,那么就可以执行了.
+        end;
+        $$;
+```
+
+
+
+### 查看存储过程
+
+```sql
+# 查看 指定库下 有哪些存储过程, 会显示一个及其 完整的属性列表
+mysql>  SHOW PROCEDURE STATUS WHERE db='数据库名';   #指定是哪个库
+
+# 查看 目前所在库 下 有哪些存储过程, 会显示一个名称列表.
+mysql>  SELECT specific_name from mysql.proc;    # 查看当前使用 库中的 存储过程
+
+#查看 指定的 存储过程 相关的创建内容,和源码,但不是很清晰.
+mysql> SHOW CREATE PROCEDURE  存储过程名;
+
+# 查看 更加简洁的存储过程和源码
+mysql> SELECT specific_name,body FROM mysql.proc  WHERE specific_name = '存储过程名';
+```
+
+### 删除存储过程
+
+```sql
+MySQL中使用DROP PROCEDURE语句来删除存储过程.
+mysql>   DROP PROCEDURE  存储过程名; 
+```
 
 ## 还可以使用SET 设置一个局部变量来传入进去
 

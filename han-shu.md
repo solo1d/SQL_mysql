@@ -1,4 +1,4 @@
-# 函数
+# 函数 和 创建函数
 
 ## 所有函数\(面试会考 时间日期函数, 控制流函数,字符串函数,转换函数\)
 
@@ -328,21 +328,67 @@ mysql> SELECT 'f'=binary 'f', 'f'=cast('f' AS binary);
   * mysql&gt;  SELECT database\(\), version\(\), user\(\); 
   * mysql&gt; SELECT benchmark\( 9999999, log\(rand\(\) \* pi\(\) \)\);  \# 该例中, mysql 计算log\(rand\(\) \*pi\(\)\) 表达式 999999次
 
+## 创建函数
 
+### 首先选择数据库, 然后查看创建函数功能是否开启
 
+```sql
+mysql> use 库;
+mysql> show variables like '%fun%';    #用这条语句来查询 
+    # 应该会显示以下结果,   我下面的代码会按照这个来进行修改.
+    +---------------------------------+-------+
+    | Variable_name                   | Value |
+    +---------------------------------+-------+
+    | log_bin_trust_function_creators | OFF   |
+    +---------------------------------+-------+
+```
 
+### 设置开启创建函数功能
 
+```sql
+# 最好使用全局变量的功能来开启功能 , 1开启  0 关闭.
+mysql> SET global  log_bin_trust_function_creators=1;   #后面的代码是运行上面显示代码得到的
+```
 
+### 创建函数的基本准则
 
+* 必须有返回值
+* 它是和 SELECT ,INSERT ,UPDATE ,ALTER 等等的语句来使用的, 而不是 call 调用,和存储过程有区别.
+* 
+### 创建函数的语法
 
+```sql
+CREATE function 函数名( 变量1名字 类型 , 变量2名字 类型 .........)
+    returns  返回值的数据类型    
+    begin
+        .... 执行的程序代码
+    return 返回值的数据;        # 这里返回值的类型, 必须和上面 returns 的类型移植.
+    end;
 
+# 还是需要进行分号 ; 功能修改
+mysql> delimiter $$;
 
+#创建函数
+mysql> CREATE function fun_add(a int , b int)
+        returns int      # 这里表示 ,返回值是int 类型
+        begin        # 开始程序执行体
+            return a+b;    #因为计算简单 ,所以直接让它返回
+        end;
+        $$;        # 创建完成;
 
+#执行之前, 先把分号 ; 功能修改回来
+mysql> delimiter ;
 
+#执行自定义函数
+mysql> SELECT  fun_add(3,4);    #注意: 这里就和 存储过程 有很大区别.     
 
+```
 
+### 查看自定义函数
 
-
+```sql
+mysql> SHOW CREATE function  函数名;
+```
 
 
 

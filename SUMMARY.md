@@ -14,7 +14,7 @@
 * [增删改查](zeng-shan-gai-cha.md)
 * [索引和约束以及主键](suo-yin.md)
 * [序列和同义词](xu-lie-he-tong-yi-ci.md)
-* [函数](han-shu.md)
+* [函数 和 创建函数](han-shu.md)
 * [视图view](shi-tu-view.md)
 * [SQL优化](sql-you-hua.md)
 * [MYSQL引擎,表锁和行锁 以及事务](mysql-yin-qing-biao-suo-he-hang-suo-yi-ji-shi-wu.md)
