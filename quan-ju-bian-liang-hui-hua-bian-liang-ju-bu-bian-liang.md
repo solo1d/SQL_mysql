@@ -29,7 +29,9 @@ mysql> SET GLOBAL autoconnit = 'off';
 
 ## 局部变量
 
-局部变量定义在存储过程内.  
+局部变量定义在存储过程内.  关键字是 declare, 且必须在 存储过程内 begin -&gt; end;
+
+格式:    declare  变量名  数据类型   default  默认值;  
 
 
 ```sql
@@ -37,15 +39,54 @@ mysql> SET GLOBAL autoconnit = 'off';
     mysql>  use 库;
     mysql> delimiter  $$;      #改变分隔符
 
-#2. 创建一个存储过程
+#2. 创建一个存储过程,并在过程内创建一个局部变量 和打印这个局部变量.
+    #2.1 第一种, 只设定初始值和输出显示局部变量
     mysql>  CREATE PROCEDURE
-            p_vartest ()
+            p_vartest1 ()
             begin
+            declare a varchar(20) default 'abc';    #定义局部变量a ,赋默认值
+            select  a;        # 输出和显示这个 局部变量a
+            end 
+            $$;
+    #2.2 第二种, 不设置默认值, 使用SET 对局部变量赋值,然后输出显示局部变量
+    mysql> CREATE PROCEDURE
+            p_vartest2()
+            begin
+            declare b int;
+            SET b = 20;        #赋值为20
+            end
+            $$;
+    
             
+            
+#3. 将 分隔符 还原
+    mysql> delimiter ;
 
-
-
-
+#4. 调用存储过程
+    mysql>  call p_vartest1();    # 局部变量和存储过程联合使用     
+    mysql>  call p_vartest2();
+    
+    #输出1:
+        mysql> call p_vartest1();    #这里我调用了存储过程.
+        +------+
+        | a    |
+        +------+
+        | abc  |
+        +------+
+        1 row in set (0.01 sec)
+        
+    #输出2
+        mysql> call p_vartest2();
+        +------+
+        |   b  |
+        +------+
+        |   20 |
+        +------+
+        1 row in set (0.01 sec)
+        
+        
+#5. 删除存储过程
+    mysql> DROP PROCEDURE p_vartest;
 ```
 
 

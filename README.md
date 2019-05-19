@@ -54,6 +54,8 @@
 * _**查询所有的数据**_
   * mysql&gt;  SELECT \* FROM   表名;     
   * \#后面有个 /G 参数它会导致数据格式发生变化,可加可不加.  如果加了 则末尾不能出现 ;  分号
+  * mysql&gt; SELECT COUNT\(\*\) INTO @b  FROM 表名;
+  * \#将查询结果输出到 @b 这个变量中去,而不是显示在屏幕上.
 * _**插入数据**_
   * mysql&gt;  INSERT INTO 表名   \(字段1, 字段2 \)  VALUES    \(字段1的值, 字段2的值\) , \(  字段1的值,字段2的值\);
   * \#如果省略VALUES前面的字段, 则表示挨个字段进行插入,不能跳过.
@@ -140,6 +142,11 @@
 * _**合并  UNION      ,  两个表的取出的数据类型以及个数必须相同.   默认合并相同行,  ALL 参数则不合并**_
   * mysql&gt;   SELECT name,id   FROM student     UNION    SELECT name,sid FROM teacher ;
   * mysql&gt;   SELECT name,id   FROM student    UNION ALL   SELECT name,sid FROM teacher; 
+
+### 设置一个临时值
+
+* mysql&gt;   SET  @b=10;
+* mysql&gt;  SELECT   SUM\(price\)   INTO @b FROM goods;
 
 ### 序列
 
@@ -312,7 +319,7 @@ mysql> SET GLOBAL autoconnit = 'off';
 
 ```
 
-### 存储过程 
+## 存储过程 
 
 ```sql
 #1. 首先选中一个数据库, 注意: 创建的存储过程, 只能在选中的这个库内执行!!!!
