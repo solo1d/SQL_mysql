@@ -31,7 +31,7 @@ CREATE USER 'pig'@'%';
 #### 命令:
 
 ```sql
-GRANT privileges ON databasename.tablename TO 'username'@'host'
+GRANT privileges ON databasename.tablename TO 'username'@'host';
 ```
 
 #### 说明:
@@ -49,7 +49,7 @@ GRANT ALL ON *.* TO 'pig'@'%';
 
 #### 注意:
 
-就是不能把别人给自己的权限再分发下去
+不允许把别人给自己的权限再分发下去
 
 用以上命令授权的用户不能给其它用户授权，如果想让该用户可以授权，用以下命令:
 
@@ -74,7 +74,7 @@ SET PASSWORD = PASSWORD("newpassword");
 #### 例子:
 
 ```sql
-SET PASSWORD FOR 'pig'@'%' = PASSWORD("123456");
+SET PASSWORD FOR 'pig'@'%' = PASSWORD("123456");    #用户pig, 登陆地点所有, 密码修改为123456
 ```
 
 ### 四. 撤销用户权限

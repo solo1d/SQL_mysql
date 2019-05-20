@@ -346,7 +346,7 @@ mysql> show variables like '%fun%';    #用这条语句来查询
 ### 设置开启创建函数功能
 
 ```sql
-# 最好使用全局变量的功能来开启功能 , 1开启  0 关闭.
+# 最好使用全局变量的功能来开启功能 , 1开启  0 关闭.  每次重启服务器,有可能出现重置现象.
 mysql> SET global  log_bin_trust_function_creators=1;   #后面的代码是运行上面显示代码得到的
 ```
 
@@ -384,13 +384,17 @@ mysql> SELECT  fun_add(3,4);    #注意: 这里就和 存储过程 有很大区�
 
 ```
 
-### 查看自定义函数
+### 查看创建的自定义函数
 
 ```sql
 mysql> SHOW CREATE function  函数名;
 ```
 
+### 删除创建的自定义函数
 
+```sql
+mysql> DROP function 函数名;
+```
 
 
 

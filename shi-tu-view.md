@@ -6,6 +6,14 @@
 
 **View可以看成是一张虚拟的表**, 是表通过某种运算得到的一个投影.
 
+### 显示所有视图
+
+#### 所有的视图都保存在 information\_schema 库下的 views 表内.
+
+```sql
+mysql> select * FROM information_schema.views;         #语句是固定的
+```
+
 ### 如何创建视图
 
 #### 创建视图的时候. 不需要指定视图的列名于类型 ,它是个影子,继承了上面的字段, 只是一种关系.
@@ -19,7 +27,8 @@
 ```sql
 mysql>  CREATE VIEW  视图名  AS SELECT 语句;
 
-#例子:
+#例子: 创建一个普通视图,  这个视图所有人都可以有权限进行查询.
+
 mysql> CREATE VIEW stats
         AS 
         SELECT cat_id,AVG(shop_price) AS pj
@@ -30,6 +39,21 @@ mysql> SELECT cat_id,pj  FROM stats;
 ```
 
 _**语句会创建一张表,  并且存放 SELECT 语句的查询结果, \( 很像输出重定向\)**_
+
+### 更新已经存在的视图
+
+```sql
+# 主要是用来更新原视图创建语句,比如添加一些内容到视图,但是不想修改名字之类的,关键字是 OR REPLACE
+mysql> CREATE OR REPLACE VIEW 已经存在的视图名  AS SELECT 新语句;
+```
+
+### 删除视图的语法
+
+```sql
+mysql> DROP VIEW 视图名;
+```
+
+_\*\*\*\*_
 
 ### 视图的用途
 
