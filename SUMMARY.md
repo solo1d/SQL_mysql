@@ -16,7 +16,6 @@
 * [序列和同义词](xu-lie-he-tong-yi-ci.md)
 * [函数 和 创建函数](han-shu.md)
 * [视图view](shi-tu-view.md)
-* [SQL优化](sql-you-hua.md)
 * [MYSQL引擎,表锁和行锁 以及事务](mysql-yin-qing-biao-suo-he-hang-suo-yi-ji-shi-wu.md)
 * [面试题](mian-shi-ti.md)
 * [用户创建和删除以及权限](yong-hu-chuang-jian-he-shan-chu-yi-ji-quan-xian.md)
@@ -27,5 +26,6 @@
 * [存储过程](cun-chu-guo-cheng.md)
 * [全局变量,会话变量,局部变量](quan-ju-bian-liang-hui-hua-bian-liang-ju-bu-bian-liang.md)
 * [触发器](chu-fa-qi.md)
-* [Untitled](untitled-1.md)
+* [SQL优化](untitled-1.md)
+* [复习和习题](sql-you-hua.md)
 
