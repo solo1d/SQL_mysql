@@ -1,0 +1,102 @@
+# 触发器
+
+## 触发器
+
+#### 触发器是一种特殊的存储过程, 它在 _插入,删除和修改_ 特定 _表_  中的数据时 触发执行, 它比数据库本身标准的功能更精细和复杂的数据控制能力.
+
+#### 触发器不能直接手动调用, 是由数据库主动去执行.  我们做的只是创建触发器和设定修改触发器.
+
+#### _**`触发器是建立在表当中的`**_
+
+### 特性
+
+* _**监视地点 :**_  一般是表, 也就是说, 触发器会监视一个特定的表.
+* _**监视事件:**_    UPDATE / DELETE / INSERT ,  也就是说 查找操作是无法触发事件的.
+* _**触发时间:**_    AFTER /  BEFORE   , 在监视事件 运行 之前还是运行 之后. 
+* _**触发事件**_     UPDATE / DELETE / INSERT    , 到底由什么事件触发  触发器.
+
+### 触发器语法
+
+#### 特别说明:
+
+* 对于 **INSERT** 而言, 新插入的行 用 **new** 来表示, 行中每一列的值用   **new.列名**   来表示.
+* 对于 **DELETE** 而言, 原本有一行,后来被删除,  想引用被删除的这一行,用   **old**  来表示,    old.列名   可以_引用被删除的行 的值._
+* 对于 **UPDATE**  而言, 被修改的行, 修改前的数据,  用   **old**    来表示,   **old.列名**    引用_被修改之前 行中的值_
+* 修改后的数据, 用 new  来表示,   **new.列名**    引用_被修改之后  行中的值_.
+
+```sql
+# 触发器 可能会涉及多个分号, 所以还是需要修改分号功能;
+# 创建触发器   关键字:TRIGGER 
+
+mysql>  CREATE TRIGGER  触发器名字  trigger_time  trigger_event 
+        ON  tal_name  FOR EACH ROW  trigger_stmt;
+        
+    # 解释:  trigger_time    是触发时间(AFTER /  BEFORE  两个)
+    #       trigger_event   是触发事件( UPDATE/ DELETE / INSERT  三个),由哪个操作来引起执行.
+    #       tal_name        表名 (对这个表进行特定操作的时候 ,会触发 触发器)
+    #       trigger_stme     具体的执行步骤和语句, 一般都是 begin ..... end  $$;
+    #  其他的都是固定写法,空格的个数和长度也要注意 ;
+
+# 例子1
+mysql> delimiter $$;        # 修改分号结尾功能, 使用 $$; 来结尾
+mysql> CREATE TRIGGER tr_insertEmp  AFTER  INSERT   #触发器名字是 tr_insertEmp, 在 INSERT 语句执行之后触发.
+        ON employees FOR EACH ROW                   #监视地点是 emloyees 这张表.
+        begin
+          INSERT  INTO cb (cname,jk_id)     # 触发之后 ,会执行这里的sql语句,
+          VALUES('下一个外健',new.id);        # new.id 是插入empolyees 中 id的值.
+        end;
+        $$;
+mysql> delimiter ;        # 记得修改回来
+        
+
+#例子2
+ # jk是主表, 主键是id   ,  cb是一个表,有个j_id 外健 连接的是jk主键id  
+#         (删除id的某个值之前,需要先删除关联的外健)
+mysql> delimiter $$;
+mysql> CREATE TRIGGER jk_delete  BEFORE  DELETE    #触发的是 删除操作, 需要在删除语句执行前 触发 触发器
+        ON jk   FOR EACH ROW                #触发器建立在 jk 表中,也就是说它触发 jk的DELETE操作
+        begin
+           DELETE FROM cb WHERE jk_id = old.id;   # old表示即将删除的数据, .id是删除数据中的列
+        end;                                      # 表示先删除外健, 再删除引用的主键.
+        $$;
+mysql> delimiter ;
+
+```
+
+### 显示所有触发器
+
+```sql
+# 在mysql 中有一个 information_schema.TRIGGERS  库内的表, 存储所有库中的触发器.
+mysql> SELECT * FROM information_schema.TRIGGERS;     #显示数据库中所有的触发器
+mysql> SELECT * FROM information_schema.TRIGGERS \G   #加个参数会显示的更清晰
+
+mysql> DESC information_schema.TRIGGERS;          #固定语句,可以看到库的触发器表的结构
+
+mysql> SHOW TRIGGERS;      #只显示你所在库内的触发器
+
+mysql> SELECT TRIGGER_NAME FROM information_schema.TRIGGERS;   #显示所有触发的的名字
+
+mysql> SELECT * FROM information_schema.TRIGGERS WHERE TRIGGER_NAME='触发器名字';
+
+```
+
+### 删除触发器
+
+```sql
+mysql> DROP TRIGGER  触发器名字;
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -136,12 +136,20 @@ mysql> CREATE TABLE 表 (
 
 #### 设置外键:外键关键字必须在列属性的最后!!!
 
+#### 外健必须拥有的属性:   
+
+* 外健关联的列, 必须是主表中的主键
+* 有唯一索引属性  UNIQUE KEY 
+* 外健必须和 关联的表的主键  类型 属性  完全相同.\(主键属性除外\).
+* 外健名字  在整个数据库内 不能重复
+* 绝对不可以对外健设置默认值
+
 ```sql
 # 关键字 在列后面,  REFERENCES  外键关联的表( 关联表的列名)
 mysql> CREATE TABLE 表  (
         Id  int PRIMARY KEY AUTO_INCREMENT,   #主键
-        name   varchar(10) NOT NULL default '', 
-        inst   int  NOT NULL REFERENCES class(sid)  #外键,sid是class表的主键
+        name  varchar(10) NOT NULL default '', 
+        inst  int  NOT NULL UNIQUE KEY inst(inst) REFERENCES class(sid)  #外键,sid是class表的主键
         ) ENGINE INNODB DEFAULT CHARSET UTF8;       # 注意顺序
 ```
 
@@ -152,4 +160,8 @@ mysql> CREATE TABLE 表  (
 * casecade  级联删除, 主表记录删除的时候,子表数据跟着删除
 * set null   设置为null  ,  主表删除的时候,  字表 外键 字段设为null
 * 默认方式,  主表删除的时候, 如果字表引用了该字段的数据, 不能删除.
+
+```sql
+mysql> ALTER TABLE 表  DROP  外健列;
+```
 

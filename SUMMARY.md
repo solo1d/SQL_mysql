@@ -26,4 +26,6 @@
 * [API编程](api-bian-cheng.md)
 * [存储过程](cun-chu-guo-cheng.md)
 * [全局变量,会话变量,局部变量](quan-ju-bian-liang-hui-hua-bian-liang-ju-bu-bian-liang.md)
+* [触发器](chu-fa-qi.md)
+* [Untitled](untitled-1.md)
 
