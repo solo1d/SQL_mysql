@@ -8,6 +8,10 @@ description: '多列索引, 冗余索引'
 
 #### 索引是数据的目录,能快速定位行数据的位置
 
+#### 索引是存储在表当中的.  在数据库迁移的时候,是无法迁移索引文件的.
+
+#### 索引原理: 主要是二叉树 
+
 #### 索引提高了查询速度,但是降低了增删改的速度, 因为操作之后也需要更新索引.  并非加的越多越好
 
 #### 一般在查询比较频繁的列上, 而且在区分度高的列上加效果更好.
@@ -21,13 +25,19 @@ description: '多列索引, 冗余索引'
 key            普通索引;  纯粹提高查询速度,      属性标示为 Key = MUL 
 unique key     唯一索引;  加快查询速度,约束数据,不允许插入相同的值(唯一的是数据). 属性标示为 Key = UNI  
 primary key    主键索引;  整张表只能存在一个,     属性标志为 Key = PRI
-fulltext       全文索引;  中文下几乎无效,要分词+索引,一般用第三方解决方案, 如sphinx 
+fulltext       全文索引;  只有myisam引擎支持.中文下几乎无效,要分词+索引,一般用第三方解决方案, 如sphinx 
 
 # 修饰:
 auto_increment  自增
 not null        不为空
 default         默认值
 
+
+# 为表的某一列创建一个索引
+mysql> CREATE 索引类型  INDEX 索引名  ON 表名(列名);
+        # 索引类型包括 key ,UNIQUE , PRIMARY 
+        # 索引名  是自定义的
+        # 后面的被建立索引的 表 和 表中的列.   #索引是存放在表中的.
 
 
 # 范例1 : 普通建立索引和主键
@@ -83,6 +93,11 @@ mysql> SHOW INDEX FROM 表名 \G
 # 显示某张表的建表语句
 mysql> SHOW CREATE TABLE 表名;
 
+#显示 后面这条查询语句所使用的索引类型,和一些详细信息.
+mysql>  EXPLAIN  SELECT * FROM 表   WHERE  和索引有关的判断  \G
+
+
+
 # 删除某张表的索引
 mysql> ALTER TABLE 表名 DROP INDEX 索引名;  #如果建表时索引是 key na(me),那么这里就写na
 mysql> DROP INDEX  索引名  ON 表名;        # 这个也可以做到删除.
@@ -94,6 +109,14 @@ mysql> ALTER TABLE 表名  ADD  PRIMARY KEY(需要主键的列);           # 主
     # ALTER TABLE t3 ADD INDEX key na(me);
     # ALTER TABLE t3 ADD UNIQUE key na(me,id);
     # ALTER TABLE t3 ADD  primary key (me) ;    # 主键不是 INDEX,所以不需要添加
+
+
+# 为表的某一列创建一个索引
+mysql> CREATE 索引类型  INDEX 索引名  ON 表名(列名);
+        # 索引类型包括 key ,UNIQUE , PRIMARY 
+        # 索引名  是自定义的
+        # 后面的被建立索引的 表 和 表中的列.   #索引是存放在表中的.
+
 
 #添加主键
 mysql> ALTER TABLE 表名 ADD PRIMARY key(列名);     # 这就是添加主键的格式
