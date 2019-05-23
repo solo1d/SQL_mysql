@@ -90,7 +90,60 @@ mysql> ALTER TABLE 表名 CHANGE 旧列名 新列名 新类型 新参数;    [�
     #例子: ALTER TABLE m1 CHANGE id uid int unsigned;
 ```
 
+### 获取表的相关信息
 
+```sql
+# 获取表的信息
+mysql> SHOW TABLE STATUS  like  '表名' \G   #如果不写表名, 则代表获取当前库下,所有的表信息.
+
+# 表的 返回值大概是这样的:  
+*************************** 1. row ***************************
+           Name: Customers               #表名
+         Engine: InnoDB                  #表的存储引擎
+        Version: 10                      #版本
+     Row_format: Compact                 #行格式, 对于MyISAM引擎,可能是 Dynamic动态, Fixed固定,compressed可变
+           Rows: 5                       #表中的行数,对于非事务性表,这个值是精确的,对于事务性引擎(Innodb),这个值通常是估算的.
+ Avg_row_length: 3276                    #平均每行包括的字节数
+    Data_length: 16384                   #整个表的数据量  (单位: 字节)
+Max_data_length: 0                       #表可容纳最大数据量
+   Index_length: 0                       #索引占用磁盘的空间大小
+      Data_free: 0                       #对于MyISAM引擎,表示已分配,但现在未使用的空间,并且包含了已被删除行的空间.
+ Auto_increment: NULL                    #下一个自动增长类型的值
+    Create_time: 2019-05-17 17:56:09     #表的创建时间.
+    Update_time: NULL                    #最新更新时间
+     Check_time: NULL                    #使用 CHECK TABLE 或 MYISAMCHK 工具检查表的最近时间
+      Collation: utf8mb4_bin             #表的默认字符集和字符排序规则,utf8mb4_bin来进行(对大小写敏感)
+       Checksum: NULL                    #实时校验和值, 对整个表的内容计算时的校验和
+ Create_options:                         #创建表时的其他所有选项.
+        Comment:                         #创建表时使用的注释和额外信息,
+                                         #   如果是MyISAM引擎,包含注视
+                                         #   如果是Innodb引擎,则表示表的剩余空间
+                                         #   如果是一个视图, 则包含 VIEW 字样.
+        
+
+# 视图  的返回值信息:
+*************************** 10. row ***************************
+           Name: stats                  #这是一个视图名
+         Engine: NULL
+        Version: NULL
+     Row_format: NULL
+           Rows: NULL
+ Avg_row_length: NULL
+    Data_length: NULL
+Max_data_length: NULL
+   Index_length: NULL
+      Data_free: NULL
+ Auto_increment: NULL
+    Create_time: NULL
+    Update_time: NULL
+     Check_time: NULL
+      Collation: NULL
+       Checksum: NULL
+ Create_options: NULL
+        Comment: View 'test.stats' references invalid table(s) or column(s) or 
+                 function(s) or definer/invoker of view lack rights to use them 
+        
+```
 
 
 

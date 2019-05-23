@@ -1,0 +1,179 @@
+# 分区
+
+### 分区的基本概念
+
+### 为什么采用分区:
+
+当数据量过大的时候\( 通常指的是 百万级 或 千万级 数据的时候\),  这个时候需要将一张表的数据划分几张表存储.   一些查询可以得到极大的优化,  这主要是借助于满足一个给定的 WHERE语句的数据可以只保存在一个或多个分区内, 这样在查找时就不用查找其他剩余的分区.
+
+#### 无法对没有分区的表进行添加分区和分区管理.
+
+#### 
+
+### 通过以下命令去查看MYSQL 是否支持分区:
+
+```sql
+mysql>   SHOW   variables  like  '%partition%';    # 如果是  YES或1  就代表支持.
+```
+
+### 分区的类型
+
+* **RANGE 分区 :**   基本属于一个给定连续区间的列值, 把多行分配给分区.
+* **LIST 分区:**  类似于 RANGE 分区, 区别在于 **LIST** 分区是基于列值匹配一个离散值集合中的某个值来进行选择.
+* **HASH 分区:**   基于用户定义的表达式的返回值来进行选择的分区, 该表达式使用将要插入列表中的这些行的列值进行计算,  这个函数可以包含MYSQL 中有效的, 产生非负整数值  的任何表达式.
+* **KEY 分区:**   类似于按 **HASH** 分区, 区别在于  **KEY** 分区只支持计算一列或多列,  且 MYSQl 服务器提供其自身的哈希函数,  必须有一列或多列包含整数值.
+
+### RANGE 分区语法
+
+关键字   partition  BY  分区类型 \(列\)\(  partition 分区名1  VALUES LESS THAN \(列值范围1\),  partition 分区名2  VALUES LESS THAN \(列值范围2\) \);
+
+```sql
+# RANGE  分区:  可以在创建表的时候指定分区, 也可以修改已有的表
+# 如果表内有主键,  则必须是 依赖主键 列分区, 如果没有主键, 则可以任意选择一列.
+mysql>  CREATE TABLE employess(
+        id  int NOT NULL,
+        fname varchar(30),
+        lname varchar(30),
+        hired date NOT NULL DEFAULT '1997-01-01',
+        separated date NOT NULL DEFAULT '9999-12-31',
+        job_code int  NOT NULL ,
+        store_id  int unsigned NOT NULL,        # 这列会被分区所依赖.
+        PRIMARY KEY(store_id)            # 将这个依赖设置为了主键, 别的列不可以成为主键.
+        )ENGINE Innodb  DEFAULT CHARSET UTF8   
+        partition BY RANGE COLUMNS(store_id)(            #按照 store_id 列来进行分区
+                partition  p0  VALUES LESS THAN (6),     #p0分区 保存store_id 小于6的行
+                partition  p1  VALUES LESS THAN (11),    #p1分区 保存store_id 等于6 小于11 的行
+                partition  p2  VALUES LESS THAN (16),    #p2分区 保存store_id 等于11 小于16 的行
+                partition  p3  VALUES LESS THAN (21)     #p3分区 保存store_id 小于21的行
+        );                                               #如果超过或等于21, 则报错 , 代码 1526
+
+############################################
+#修改版
+mysql>  CREATE TABLE employess(
+        id  int NOT NULL,
+        fname varchar(30),
+        lname varchar(30),
+        hired date NOT NULL DEFAULT '1997-01-01',
+        separated date NOT NULL DEFAULT '9999-12-31',
+        job_code int  NOT NULL ,
+        store_id  int unsigned NOT NULL,        # 这列会被分区所依赖.
+        PRIMARY KEY(store_id)            # 将这个依赖设置为了主键, 别的列不可以成为主键.
+        )ENGINE Innodb  DEFAULT CHARSET UTF8   
+        partition BY RANGE COLUMNS(store_id)(            #按照 store_id 列来进行分区
+                partition  p0  VALUES LESS THAN (6),     #p0分区 保存store_id 小于6的行
+                partition  p1  VALUES LESS THAN (11),    #p1分区 保存store_id 等于6 小于11 的行
+                partition  p2  VALUES LESS THAN (16),    #p2分区 保存store_id 等于11 小于16 的行
+                partition  p3  VALUES LESS THAN (21),    #p3分区 保存store_id 小于21的行
+                partition  p4  VALUES LESS THAN MAXVALUE  #p4分区 保存所有大于等于21的都会存储到p4分区
+        );                                                #这样修改就不会因为超过21而报错.
+
+```
+
+### LIST 分区语法
+
+
+
+```sql
+mysql> CREATE TABLE employees(
+    id int NOT NULL,
+    fname varchar(30),
+    lname varchar(30),
+    hired date NOT NULL DEFAULT '1970-01-01',
+    separated date NOT NULL DEFAULT '9999-12-31',
+    job_code int,
+    store_id int
+    )ENGINE Innodb DEFAULT CHARSET UTF8
+    partition BY LIST COLUMNS(store_id)(     #LIST代表是使用LIST的分区格式, 依靠store_id来进行分区
+        partition pNorth VALUES IN (3,5,6,9,17),        #当 store_id 等于后面集合中的某个值时,他就会存放到pNorth分区
+        partition pEast  VALUES IN (1,2,10,11,19,20),   #后面都是相同的规则, 
+        partition pWest  VALUES IN (4,12,13,14,18),     
+        partition pCent  VALUES IN (7,8,15,16)
+    );                   
+ #但是, 一旦有存入的值不等于上面所有分区的任何一个集合中的时候,会报错,而且无法插入,  错代码 1526
+    
+```
+
+
+
+### HASH 分区语法
+
+```sql
+mysql> CREATE TABLE emp(
+    id int NOT NULL,
+    store_id int
+    )ENGINE Innodb DEFAULT CHARSET UTF8
+    partition BY HASH (store_id)    #根据store_id 的值,进行哈希值计算
+    PARTITIONS 4;                         #按照哈希值分成4个区, 存入的内容 系统会自动归类. 
+                            #如果最后这段话不写,那么就放在一个区内.
+```
+
+
+
+### KEYS 分区语法
+
+```sql
+mysql> CREATE TABLE tk(
+    col1 int NOT NULL,
+    col2 char(5),
+    col3 date
+    ) ENGINE Innodb DEFAULT UTF8
+    partition BY LINEAR KEY(clo1)    #LINEAR 是关键字. 通过这个列上的值 clo1 来进行2的幂来计算
+    partitions 3;                #按照2的幂来分成 3 个区. 存入的内容 系统会自动进行管理.
+```
+
+### 显示表的分区
+
+```sql
+mysql> SHOW CREATE TABLE 表名 \G
+```
+
+
+
+### 为 RAGE 和 LIST 分区表 增加一个分区
+
+```sql
+mysql> ALTER TABLE 表名 ADD partition ( partition 新分区名 VALUES THAN或IN (某个具体的值));
+        # 例如上面的 HANGE 的 employess表 
+   mysql> ALTER TABLE employess  ADD partition( partition ph VALUES THAN(33));
+        # 例如上面 LIST 的  employees 表
+   mysql> ALTER TABLE employees ADD partition( partition pp VALUES IN (99) );
+```
+
+### 为 HASH 和 KEYS 分区表 增加一个分区
+
+```sql
+mysql> ALTER TABLE 表名  ADD partition partitions 添加的分区个数;
+    # 例如 我需要向 HASH 或 KEYS 分区的表, 添加3个分区, 将原本的4个分区扩展到 7个分区
+    mysql> ALTER TABLE tlt ADD partition partitions 3;
+```
+
+
+
+### 删除分区
+
+```sql
+# 当执行删除分区的操作时, 会将存储在分区上的数据也一起删除,(只能删除到剩下一个分区, 除非删除整个表)
+mysql> ALTER TABLE  表名  DROP partition 分区名;      # 删除 RANGE 和 LIST 用这个
+mysql> ALTER TABLE  表名  coalesce partition  数值;    # 删除 HASH 和 KEYS 用这个
+mysql> DROP TABLE 表名;         #彻底删除整个表. 四者通用
+    
+    
+#例如删除 employees 表中, RANGE分区格式下的  p0分区
+    mysql> ALTER TABLE employees DROP partition p0;
+#例如删除  emp 表中,  LIST 分区格式下的 pNorth 分区
+    mysql> ALTER TABLE  emp DROP partition  pNorth;
+    
+#例如删除 titles  表中, HASH 分区格式的两个分区.  
+    mysql> alter table titles coalesce partition 2;
+#例如删除 titles 表中,  KEYS 分区格式的3个分区
+    mysql> alter table titles coalesce partition 3;
+```
+
+
+
+
+
+
+
+
+

@@ -26,6 +26,7 @@
 * [存储过程](cun-chu-guo-cheng.md)
 * [全局变量,会话变量,局部变量](quan-ju-bian-liang-hui-hua-bian-liang-ju-bu-bian-liang.md)
 * [触发器](chu-fa-qi.md)
-* [SQL优化](untitled-1.md)
+* [MYSQL优化](untitled-1.md)
+* [分区](fen-qu.md)
 * [复习和习题](sql-you-hua.md)
 
