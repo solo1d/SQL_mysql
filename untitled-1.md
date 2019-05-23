@@ -1,4 +1,12 @@
+---
+description: '表的分析 检查 优化,  分区,  优化MsqlServer ,  应用优化,  权限管理,   监控,  定时维护,   备份和还原.'
+---
+
 # MYSQL优化
+
+## status 是服务器状态变量
+
+## variables 是服务器系统变量
 
 ## 慢查询
 
@@ -178,10 +186,16 @@ Innodb 用一块内存区做 IO 缓存池, 该缓存池不仅用来缓存 Innodb
 
 * 调整 **max\_connections**  提高并发连接, 这个就是同时连接到服务器的 连接数. 
   * **\( 如果需要千万级并发,那么这个值就一定要设置到千万\)**
+    * mysql&gt;  SHOW variables like '**max\_connections**';     \#查寻
+    * mysql&gt; SET  **max\_connections** =20000 ;     \#设置同时连接数是 20000
 * 调整 **thread\_cache\_size**  ,加快连接数据库的速度, mysql会缓存一定数量的客户端服务线程 以备重用, 通过参数  thread\_cache\_size  可控制 mysql 缓存客户端服务线程的数量.  ****
   * **\(如果需要千万级并发, 那么这值也不能少于几千 或几万 \)**
+    * mysql&gt;  SHOW variables like '**thread\_cache\_size**';        \#查寻
+    * mysql&gt; SET  **thread\_cache\_size** = 200000;           \#设置缓存线程个数是 200000;
 * 调整 **innodb\_lock\_wait\_timeout**    控制innodb 事务等待行锁的时间, 对于快速处理的sql语句.可以将行锁的等待超时 时间调小, 以避免事务长时间挂起,  对于后台运行的批处理操作, 可以将行锁等待超时  时间调大, 以避免发生大的回滚操作.
   * **\(如果需要千万级并发, 那么这个值保持在 30  \(单位是毫秒\), 但是 当我们进行服务器维护的时候, 这个值要设置的大一些 到 80 左右 \)**
+    * mysql&gt;  SHOW variables like '**innodb\_lock\_wait\_timeout**';        \#查寻
+    * mysql&gt; SET  **innodb\_lock\_wait\_timeout** =30;           \#设置为30毫秒
 
 ## MYSQL应用优化
 
@@ -189,17 +203,173 @@ Innodb 用一块内存区做 IO 缓存池, 该缓存池不仅用来缓存 Innodb
 
 ### 访问数据库采用连接池
 
+线程池内存放一些初始化好的线程,留给连接过来的客户端使用.
+
+就算客户端中断了连接之后, 这个用户占用过的线程还是会回到线程池,  如果线程池已经满了,或者已经达到mysql设置的最大数量, 那么才会销毁这个线程.
+
+可以增加用户在访问服务器的速度, 因为有线程直接来进行使用,而不是去创建,  这样很节省时间.
+
+调整 **thread\_cache\_size**   的大小就可以达到增加线程池内 线程个数的目的.
+
+* mysql&gt;  SHOW variables like '**thread\_cache\_size**';        \#查寻
+* mysql&gt; SET  **thread\_cache\_size** = 200000;           \#设置缓存线程个数是 200000;
 
 
 
+### 采用缓存机制  来减少对MYSQL的访问
 
-### 采用缓存减少对MYSQL的访问
+**当表的结构和数据没有发生任何改变的时候,这个缓存才是有效的,  一旦出现任何更改和插入, 那么缓存直接失效.**
 
+#### 建议将缓存空间设置为0   , 这样可以保证数据的实时有效性和安全性, 虽然这样会增加服务器的压力,但是可以保证数据安全.
 
+* 避免对同一数据做重复检索
+  * 避免查询同一张表的时候, 检索的列不同而造成的重复检索
+* 使用查询缓存
+  * 当多个客户端 连续发送两条完全相同的查询语句的时候, 那么服务器将会执行第一条sql语句,并且返回, 然后发现第二个sql语句和上句相同,  就会把上次查询的结果直接,而不会执行查询.\(缓存机制\)
+* 缓存参数的配置
+  * 打开缓存开关, 让缓存生效
+    * mysql&gt;  SHOW GLOBAL variables like 'query\_cache\_type';           \#显示缓存配置, on 开 off关
+    * mysql&gt;  SET GLOBAL  query\_cache\_type = ON;        \#打开缓存
+  * 设置缓存空间大小,  
+    * mysql&gt; SHOW  GLOBAL variables  like 'query\_cache\_size';
+    * mysql&gt; SET GLOBAL query\_cache\_size =  0;     \#  必须是 1024 的整数倍  \(单位是字节\)
+  * 分配内存块时的最小单位大小
+    * mysql&gt;  SHOW GLOBAL  variables like 'query\_cache\_min\_res\_unit';      \#显示大小
+    * mysql&gt;   SET   GLOBAL  query\_cache\_min\_res\_unit =  4096;    \#必须是 1024的整数倍 \(单位是字节\) 
+  * mysql 能够缓存的最大结果的 数量, 如果超出,则增加 qcache\_not\_cached的值,并删除查询结果.
+    * mysql&gt;  SHOW GLOBAL variables like 'query\_cache\_limit';       \#显示数量
+    * mysql&gt;   SET   GLOBAL  query\_cache\_limit =  4096;    \#必须是 1024的整数倍 \(单位是字节\) 
+  * 如果这个表被锁住, 是否仍然从缓存中返回数据,  默认是oFF,  表示仍然可以返回.
+    * mysql&gt;   SHOW GLOBAL  variables like 'query\_cache\_wlock\_invalidate';   
+    * mysql&gt;   SET   GLOBAL  query\_cache\_wlock\_invalidate = ON;
 
 
 
 ### 使用负载均衡
+
+#### 一个主MYSQL 服务器\(master\)   与多个从属 MYSQL 服务器\(Slave\)  建立复制\(replication\)  连接.
+
+主服务器与从服务器实现一定程度上的数据同步,  多个从属服务器存储相同的数据副本,  实现数据冗余, 提供容错功能,  部署开发应用系统时, 对数据库操作代码进行优化.  将写操作\( 如 UPDATE, INSERT\) 定向到 主服务器, 把大量的查询操作 \(SELECT \) 定位到从属服务器,  实现集群的负载均衡功能.
+
+#### 如果主服务器发生故障, 从属服务器将转换角色 成为主服务器,  应使系统为终端用户提供不间断的网络服务;  当主服务器恢复启动后,  将目前临时的主服务器 将其转换为从属服务器,  存储数据库副本,  继续对终端用户提供数据查询检索服务.
+
+
+
+## MYSQL监控
+
+监控主要用来检查MYSQL服务器是否运行正常, 是否出现错误. 可以当作一种排查错误的手段.
+
+常见的MYSQL监控方式有三种
+
+* 自己编写程序或者脚本控制
+* 采用商业解决方案监控
+* 开源软件解决方案监控
+
+### 自己编写程序或者脚本控制 监控
+
+#### 脚本命令:
+
+```bash
+脚本控制, 一般都是 bash 命令
+# 监控 mysql 是否提供正常的服务;  命令:
+bash $ mysqladmin -u 用户名 -p 密码 -h localhost ping 
+            # 一般监控都是使用 mysql的  root账户来进行
+            # -h 表示返回给哪个谁(IP地址), localhost 表示返回本地
+            #执行成功后会返回   mysqld is alive     这段表示运行正常.
+    
+    
+# 获取mysql 当前的几个状态值
+bash $ mysqladmin  -u root -p 密码  -h localhost status 
+        #一般返回如下状态值
+           # Uptime: 55560       /* 表示mysql 的运行时间 (秒) */
+           # Threads: 2          /* 活动线程数（客户端）,一个客户端一个线程,每连接一个客户端,就增加一个线程*/
+           # Questions: 276      /* 自服务器启动以来客户端 执行查询语句的个数 */
+           # Slow queries: 0     /* 慢查询的次数总计 */
+           # Opens: 99           /* 服务器打开过的 数据库中表 的总次数 */
+           # Flush tables: 1     /* 服务器 执行过的 流溢命令的数量  */
+           # Open tables: 93     /* 当前打开的表的数量 */
+           # Queries per second avg: 0.004    /* 查询语句执行的平均时间 */
+
+
+#获取数据库当前的连接信息 , 就是当前有 哪些个用户连接到了数据库. 并且列出详细信息.
+bash $ mysqladmin  -u root -p 密码  -h localhost processlist
+
+
+#获取当前 数据库 连接 数
+bash $ mysql -uroot -p 密码 -BNe "SELECT host,COUNT(host) FROM processlist group by host;"  information_schema
+          # 一般返回如下信息,  比如现在有2 个用户连接到了数据库
+            # 192.168.1.104:54040	1       # 表示这个IP地址有一个用户在连接,端口是54040
+            # localhost	1                   # 这是本地刚刚执行命令出现的,可以忽略,因为没端口号
+
+
+#获取当前 休眠 的客户端 (也就是有一段时间没有执行过sql 语句的客户端)
+bash $ mysql -uroot -p 密码 -BNe "SELECT host,COUNT(host) FROM processlist WHERE command='Sleep' group by host;"  information_schema
+
+
+#检查,修复,分析, 优化 MysqlServer 中相关的表, (命令很消耗时间)
+bash $ mysqlcheck -uroot -p 密码  --all-databases
+            #会返回 " 库名.表名   OK " 的字样
+            # 如果出现其他字样, 就代表 自动修复 出现了问题 ,需要手动修复.
+           
+```
+
+
+
+### Mysql 客户端语句监控
+
+```sql
+# 查询  是否建立了太多的临时表,  过多的临时表会占用很大的内存空间, 服务器有可能会将它挪到硬盘上.
+mysql> SHOW status like 'Created_tmp%';
+        #会返回如下信息
++-------------------------+-------+
+| Variable_name           | Value |
++-------------------------+-------+
+| Created_tmp_disk_tables | 0     |
+| Created_tmp_files       | 6     |
+| Created_tmp_tables      | 7     |        #这个表示已经有7个临时表
++-------------------------+-------+
+
+
+
+# 锁状态: 锁定状态包括表所和行锁 两种. 可以通过系统状态变量(status) 来获得锁定总次数. 锁定造成其他
+#        线程等待的次数,以及锁定等待时间信息.
+mysql>  SHOW status  like '%lock%';
+          #会返回如下部分信息, 截取出来较为重要的内容
++---------------------------------------------+-------+
+| Variable_name                               | Value |
++---------------------------------------------+-------+
+| Innodb_row_lock_waits                       | 0     |   #Innodb引擎, 因为行锁,而阻塞的 语句个数
++---------------------------------------------+-------+
+
+
+# Innodb_log_waits  状态变量直接反映出 Innodb Log Buffer 空间不足造成的等待次数
+mysql> SHOW status like 'Innodb_log_waits';
+           #返回值的信息
++------------------+-------+
+| Variable_name    | Value |
++------------------+-------+
+| Innodb_log_waits | 0     |    # 为0则代表正常, 非0 则表示内存空间不足 造成的 sql语句阻塞.
++------------------+-------+
+
+
+```
+
+
+
+## Mysql 定时维护  \(定时器\)
+
+#### Mysql 的定时器 : 指的是在某个时间段去执行同样的代码, 比如闹钟, 每到指定的时间闹铃就会响.
+
+#### Mysql 定时器是从 5.1 版本开始才支持 event \(定时器\) 的.
+
+```sql
+# 查看mysql版本
+mysql> SHOW variables like '%version%';
+```
+
+
+
+
 
 
 
