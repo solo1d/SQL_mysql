@@ -1,5 +1,5 @@
 ---
-description: '表的分析 检查 优化,  分区,  优化MsqlServer ,  应用优化,  权限管理,   监控,  定时维护,   备份和还原.'
+description: '表的分析 检查 优化,  分区,  优化MsqlServer ,  应用优化,  权限管理,   监控,  定时维护, 定时器,  备份和还原.'
 ---
 
 # MYSQL优化
@@ -363,13 +363,125 @@ mysql> SHOW status like 'Innodb_log_waits';
 #### Mysql 定时器是从 5.1 版本开始才支持 event \(定时器\) 的.
 
 ```sql
-# 查看mysql版本
+# 查看mysql版本 的三种方法
 mysql> SHOW variables like '%version%';
+mysql> SELECT version();
+mysql> \s 
+```
+
+### 查看当前定时器是否处于开启状态 \(默认关闭\)
+
+```sql
+mysql>  SHOW variables like 'event_scheduler';
+```
+
+### 开启定时器功能
+
+```sql
+# 开启定时器功能
+mysql>  SET GLOBAL event_scheduler = 1;
+```
+
+### 定时器语法
+
+```sql
+#显示目前存在的定时器 (固定语法,可能需要root权限)
+mysql> SELECT  * FROM  mysql.event \G
+
+# 首先删除要创建可能会与自己将要定义的定时器名字相同的定时器.
+mysql> DROP  event if exists 定时器名;
+
+
+#先创建一个存储过程  来设置定时器要做的事情.
+mysql delimiter $$;                #修改分号的属性
+mysql> CREATE procedure 存储过程名()
+        begin
+        INSERT INTO  表(列)  VALUES (值);   #我想通过存储过程来插入某些值.
+        end
+        $$;
+mysq> delimiter ;        #恢复分号属性
+
+
+#创建定时器 (虽然创建了,但是默认是不开启的)
+mysql> CREATE event 定时器名              #下面每段代码都有意义, 可以合理删除和添加
+        ON schedule every 1 second       #设置定时器每 1 秒钟就执行一次, minute分钟,hour小时,day天,month月,quarter季度,year年
+        STARTS '2012-09-24 00:00:00'     #设置从 2012年9月24号0点 开始执行. 如果这行不写,那么就需要手动执行
+        ON completion preserve disable   #当定时器被停止,那么这个定时器也不会直接消失
+        do call 存储过程名();              #do后面是 定时器要做的事情, call 调用存储过程.
+                                         #do后面还可以是 函数,sql语句, 等等
+        
+        
+#开启定时器, 一旦执行,那么定时器就会开始执行了.
+mysql> ALTER event 定时器名  
+        ON completion preserve enable;    # 开启定时器
+
+#关闭定时器
+mysql> ALTER event 定时器名  
+        ON completion preserve disable;;    # 开启定时器      
+        
+
+#删除定时器
+mysql> DROP event if exists 定时器名;
 ```
 
 
 
+## 备份还原
 
+### 三种备份方式
+
+* 通过使用 bash\# mysqldump 命令备份
+  * 命令会将数据库中的数据备份成一个文本文件. 表的结构和表中的数据存储在生成的文本文件中.
+* 直接复制整个数据库目录
+  * 
+* 使用 mysqlhotcopy 工具快速备份 \(主要针对 Linux\)
+
+#### mysqldump 命令备份方式
+
+**原理:**  它会先查出需要备份的表的结构, 在再文本文件中生成一个 CREATE 语句, 然后将表中的所有记录转换成一条 INSERT 语句. 然后通过这些语句,就能够创建表并插入数据. \(说白了就是变成了一个脚本\)
+
+```bash
+"备份 指定库下的 某些指定的表"
+bash # mysqldump -u 用户名  -p  dbname table1 table2 ...... tableN > name.sql   
+
+"备份一个数据库, 不加表名就行"
+bash # mysqldump -u 用户名  -p  dbname  > name.sql   
+
+"备份多个数据库"
+bash # mysqldump -u 用户名  -p  --databaes dbname1 dbname2 .... dbnameN > name.sql
+
+"备份所有的数据库"
+bash # mysqldump -u 用户名  -p  --all-databases > name.sql
+
+        #首先需要 用户 有对表和数据库有相应的 读写权限才可以执行该命令
+        # 解释:  dbname        需要备份的库 的名称
+        #        --databaes   这个参数表示后面跟的都是数据库名称
+        #        --all-databases    表示选择所有的数据库
+        #        table1       该库下需要备份的的表名,表于表之间不需要逗号
+        #        >            指向的是备份到哪个文件,也可以写路径
+        #        name.sql     指的是备份到name.sql 这个文件内.
+        
+#执行该命令后, 只会提示你输入密码, 除此之外没有任何提示, 一旦出现任何提示,就代表出现了问题,会造成备份失败
+
+# 如果使用该命令生成的备份去别的库进行还原的话,需要注意, 绝对不能出现和备份中同名的 表和库,
+#     否则会直接被删除!!!
+#  还原的时候, 会进行锁表操作.   还原结束后才会解锁
+```
+
+### 还原
+
+```bash
+"还原某一个单独的库, 但是需要保证这库存在,而且和备份文件的库名相同"
+bash $ mysql -u root -p bank < name.sql
+                "bank是一个库名,它存在数据库中,也存在备份文件中"
+                
+"还原整个库,将库内所有的内容全部还原到 备份文件 备份的日期"
+bash $ mysql -u root -p < name.sql
+
+"还原某个数据库中的某张固定的表"
+"还是去仔细去备份中寻找被删除表的 建表语句和insert语句, 然后拷贝出来做成脚本来进行恢复 较为方便"
+
+```
 
 
 
