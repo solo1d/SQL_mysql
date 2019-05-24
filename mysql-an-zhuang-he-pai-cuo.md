@@ -42,9 +42,23 @@ flush privileges;
 exit;
 ```
 
+## 设置Mysql 数据库编码, 统一字符集
+
+```sql
+mysql> show global variables like '%char%';         #查看编码,然后按需求进行设置
+```
+
+
+
 ### 使用以下命令来进行mysql 的服务的重启,停止,运行.
 
       $ sudo /etc/init.d/mysql status/start/stop/restart
+
+## Mysql配置文件
+
+/etc/mysql/mariadb.conf.d/50-server.cnf
+
+
 
 ## 开启mysql远程访问
 

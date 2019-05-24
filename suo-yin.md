@@ -6,6 +6,8 @@ description: '多列索引, 冗余索引'
 
 ## 索引的作用与类型
 
+#### 索引是帮助MYSQL高效获取数据的数据结构. \(B树\)
+
 #### 索引是数据的目录,能快速定位行数据的位置
 
 #### 索引是存储在表当中的.  在数据库迁移的时候,是无法迁移索引文件的.
@@ -38,6 +40,12 @@ mysql> CREATE 索引类型  INDEX 索引名  ON 表名(列名);
         # 索引类型包括 key ,UNIQUE , PRIMARY 
         # 索引名  是自定义的
         # 后面的被建立索引的 表 和 表中的列.   #索引是存放在表中的.
+
+#为 mm 表下的 id 列创建一个 唯一索引, 索引名是 ii
+mysql>  CREATE  unique index   ii  ON  mm(id);
+
+#创建一个多列索引,  mm表  ,id 和 jj 两列 , 索引名 ii
+mysql>  CREATE  index   ii   ON  mm( id, jj);
 
 
 # 范例1 : 普通建立索引和主键

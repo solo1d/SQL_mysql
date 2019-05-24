@@ -2,7 +2,7 @@
 description: 操作系统是MAC
 ---
 
-# mysql客户端安装和连接
+# mysql客户端 安装和连接
 
 ## MAC需要安装一个客户端
 

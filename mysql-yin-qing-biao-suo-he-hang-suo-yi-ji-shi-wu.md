@@ -26,13 +26,19 @@ mysql>  CREATE TABLE 表名 ( 列名  列类型, ...) ENGINE INNODB;   #创建�
 mysql>  ALTER TABLE  表名 ENGINE  INNODB;        # 将某个已经存在的表,引擎修改为 INNODB
 ```
 
+### Innodb 和 myisam 两种引擎的区别
+
+Innodb  : 事务优先   \(适合高并发,  行锁\)
+
+Myisam : 性能优先  \(表锁\)
+
 ## 表锁和行锁
 
 #### 锁状态: 锁定状态包括表所和行锁 两种. 可以通过系统状态变量\(status\) 来获得锁定总次数.
 
-### MyISAM 引擎  表锁  : 需要改变表的存储类型才可以使用,  类型变更为\(MyISAM\) ,而且是串行的.
+### MyISAM 引擎  表锁  : 需要改变表的存储类型才可以使用,  类型变更为\(MyISAM\) ,而且是串行的. 一次锁一整张表
 
-### INNODB  引擎  行锁 : 它和 MyISAM 差不多,  命令不区分,执行方式也没有太大区分.
+### INNODB  引擎  行锁 : 它和 MyISAM 差不多,  命令不区分,执行方式也没有太大区分. 一次锁一行,然后依次递增把表内的每一行都上锁.
 
 #### MyISAM的表锁有两种模式:  _表共享读锁\(TABLE READ lock\)_  和    _表独占写锁 \(TABLE WRITE LOCK\)_
 
