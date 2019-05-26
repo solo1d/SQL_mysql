@@ -2,7 +2,7 @@
 description: 感觉比慢查询好用
 ---
 
-# 分析海量数据和主从同步
+# 分析海量数据和主从同步 复制
 
 ## 分析海量数据
 
@@ -112,33 +112,24 @@ mysql>  show profiles;                 #显示记录的sql语句和执行时间(
 mysql> show profile all for query   上一步查询的Query_ID;    # all 表示查看全部
 mysql> show profile cpu,block  io for query 上一步查询的Query_ID;     #查看 cpu ,block  的值
 
+
 # 全局查询日志 : 记录开启之后的全部 sql 语句, (仅可用于开发调试,最终项目上线必须关闭), 默认关闭
 mysql>  SHOW variables  like '%general_log%';    #查询目前查询日志功能是否开启
-mysql>  SET GLOBAL general_log = 1;              #开启全局日志功能
-mysql>  SET GLOBAL log_output = 'table';         #让记录输出到表中, 而不是文件中
-                                                 #开启后,会记录所有的SQL,  记录到 mysql.general_log 表中.
-        #让他输出到文件,而不是表中.
-       mysql> SET GLOBAL general_log = 1;        #需要二次执行,让他开启
-       mysql> SET GLOBAL general_log_file = '/var/lib/mysql/localhost-general.log';   #让记录输出到文件
-       mysql> SET GLOBAL log_output = 'file';    #输出到文件
-       
-mysql> select * FROM mysql.general_log ;         #查询 记录的全局查询日志
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+# 1  执行的所有SQL 记录到表中, 在 mysql.general_log 表中.
+  mysql>  SET GLOBAL general_log = 1;              #开启全局日志功能
+  mysql>  SET GLOBAL log_output = 'table';         #让记录输出到表中, 而不是文件中
+  mysql> select * FROM mysql.general_log ;         #查询,  记录的全局查询日志到表中
+# 2  执行的所有SQL  记录到文件中. 目录和文件名都可以自定义
+  mysql> SET GLOBAL general_log = 1;         #开启全局日志功能
+  mysql> SET GLOBAL general_log_file = '/var/lib/mysql/localhost-general.log';   #让记录输出到文件
+  mysql> SET GLOBAL log_output = 'file';    #输出到文件
+  mysql> select * FROM mysql.general_log ;         #查询,  记录的全局查询日志到文件中
 
 ```
+
+## 主从复制   \(集群在数据库的一种实现\)
+
+
 
 
 
