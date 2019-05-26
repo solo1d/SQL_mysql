@@ -354,7 +354,7 @@ mysql> SET global  log_bin_trust_function_creators=1;   #后面的代码是运�
 
 * 必须有返回值
 * 它是和 SELECT ,INSERT ,UPDATE ,ALTER 等等的语句来使用的, 而不是 call 调用,和存储过程有区别.
-* 
+
 ### 创建函数的语法
 
 ```sql

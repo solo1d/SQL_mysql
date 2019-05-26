@@ -136,7 +136,7 @@ description: '表的分析 检查 优化,  分区,  优化MsqlServer ,  应用�
 
 #### 慢查询日志功能是关闭的, 需要慢查询日志,首先要开启慢查询日志功能, 开启之后重启服务.
 
-#### 
+#### 开发时 打开 慢查询 用于调试,   而最终上线时要 关闭慢查询
 
 * 在mysql的配置文件中添加 如下内容,\( sudo vim /etc/mysql/mariadb.conf.d/50-server.cnf \)
   * log-slow-queries = /home/pi/mysql\_log/mysql-slow-query.log    \#你必须对这个目录拥有写权限
@@ -178,26 +178,27 @@ mysql> show GLOBAL status  like 'slow_queries';   # 整个服务器, 被记录 �
 ### 启动慢查询 和 mysql 服务安全模式
 
 ```bash
-#第一种方法, 直接设置全局变量,不需要重启服务器
-
-"首先查询是否开启了安全模式,如果关闭 那么请打开它"
-mysql> show GLOBAL variables like 'SQL_SAFE_UPDATES';  # OFF 关  ON 开
+#临时开启, 直接设置全局变量,不需要重启服务器, 但是mysql 重启后失效
 
 mysql>set global slow_query_log=ON;   # 开启慢查询模式
 
 -------------------------------------------------
-#第二种方法  , 首先需要关闭服务器,然后再添加参数后 重启
+#永久开启  , 首先需要关闭服务器,然后再添加参数后 重启
 "以安全模式启动 mysql 服务, 才可以启动慢查询"
 "首先停止MySQL服务"
 sudo service mysqld stop
-sudo service mysqld_safe stop
-sudo service mysql stop 
-sudo /etc/init.d/mysql  stop
+sudo /etc/init.d/mysql stop
 
-"安全模式启动 mysql 服务"
-sudo mysqld --safe-mode --slow-query-log
-
-"启动后 bash 可能会卡死, 这个是正常现象"
+"使用 管理员权限修改配置文件"
+sudo vim /etc/mysql/mariadb.conf.d/50-server.cnf 
+    
+"在  [mysqld]   这句话的下面添加如下字段"
+#开启慢查询
+slow_query_log=1
+slow_query_log_file=/var/lib/mysql/localhost-slow.log
+long_query_time = 1
+log_slow_rate_limit	= 1000
+log-queries-not-using-indexes
 ```
 
 ### 找到  慢查询日志记录文件
@@ -213,14 +214,48 @@ whereis  mysql ;
 "来到配置文件目录"
 cd /etc/mysql/mariadb.conf.d
 
-"打开 50-server.cnf 这个服务器配置文件, 寻找到 datadir 这个选项, 例如下面"
-# 假如我的配置文件中 是这么写的:   datadir = /var/lib/mysql
+"打开 50-server.cnf 这个服务器配置文件, 寻找到 slow_query_log_file 这个选项, 例如下面"
+# 假如我的配置文件中 是这么写的:  slow_query_log_file=/var/lib/mysql/localhost-slow.log
 
 "随后进入上面搜索到的路径"
-cd /var/lib/mysql
+cd /var/lib/mysql/
 
 "该目录下会有一个结尾是 : xxxx-slow.log  文件, 里面存放的就是慢查询记录"
-例如我的树莓派就是 raspberrypi-slow.log :   sudo vim  raspberrypi-slow.log
+例如我的树莓派就是 localhost-slow.log :   sudo vim  localhost-slow.log
+```
+
+### 通过查看慢查询记录的内容
+
+```bash
+# 通过 mysqldumpslow 工具查看慢sql, 可以通过一些过滤条件,快速定位到需要的慢sql语句
+# 语法 :  sudo  mysqldumpslow   各种参数  慢查询日志的文件
+
+bash $ sudo  mysqldumpslow --help
+# 会返回如下内容
+  -s ORDER     排序方式
+               what to sort by (al, at, ar, ae, c, l, r, e, t), 'at' is default
+                al: average lock time
+                ar: average rows sent
+                at: average query time
+                aa: average rows affected
+                 c: count
+                 l: lock time
+                 r: rows sent
+                 t: query time  
+  -r           逆序
+               reverse the sort order (largest last instead of first)
+  -g PATTERN   正则表达式匹配模式
+               grep: only consider stmts that include this string
+  -l           锁定时间
+               don't subtract lock time from total time
+
+# 查询使用示例
+  --获取返回记录组多的3个sql
+bash $ sudo mysqldumpslow -s r -t 3  /var/lib/mysql/localhost-slow.log
+  --获取访问次数最多的3个sql
+bash $ sudo mysqldumpslow -s c -t 3  /var/lib/mysql/localhost-slow.log
+  --按照时间排序,前10条包含 LEFT JOIN 查询语句的SQL
+bash $ sudo mysqldumpslow -s t -t 10 -g "LEFT JOIN"  /var/lib/mysql/localhost-slow.log
 ```
 
 ## 在使用MYSQL 的时候,一些常见的设置
