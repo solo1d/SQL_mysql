@@ -76,9 +76,9 @@ mysql> show global variables like '%char%';         #查看编码,然后按需�
 
 ```sql
 use mysql;
-GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY 'root账号密码' WITH GRANT OPTION;
+GRANT ALL PRIVILEGES ON *.* TO 'root'@'%'  IDENTIFIED BY '前面账户root密码' WITH GRANT OPTION;
 flush privileges;
--- 上面的root帐号密码,是安装mysql设定的,而不是真正的Linux 用户root密码.
+
 ```
 
 #### 设置完成后重启mysql服务程序

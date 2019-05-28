@@ -29,7 +29,7 @@
 * [定时器](ding-shi-qi.md)
 * [备份还原](bei-fen-hai-yuan.md)
 * [MYSQL优化](untitled-1.md)
-* [面试题](mian-shi-ti.md)
-* [复习和习题](sql-you-hua.md)
 * [分析海量数据和主从同步 复制](fen-xi-hai-liang-shu-ju-he-zhu-cong-tong-bu.md)
+* [复习和习题](sql-you-hua.md)
+* [面试题](mian-shi-ti.md)
 
