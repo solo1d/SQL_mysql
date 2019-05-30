@@ -6,7 +6,7 @@
 
 ### 关键顺序
 
-#### 书写顺序\(执行顺序\):    SELECT\(5\)    FROM\( 1\)     WHERE \(2\)      GROUP BY\(3\)       HAVING\(4\)     ORDER BY\(6\)     LIMIT \(7\)
+#### 书写顺序\(执行顺序\):    SELECT\(7\)   聚合函数\(4\)  计算所有的表达式\(6\)  FROM\( 1\)     WHERE \(2\)      GROUP BY\(3\)       HAVING\(5\)     ORDER BY\(8\)     LIMIT \(9\)  
 
 ### DLL : 数据库定义语言\( 管理数据结构的 \)  : 用来 定义表 有什么样的类型和数据.
 
@@ -133,20 +133,20 @@
 ### 多表联查
 
 * _**99查询, 使用逗号连接**_
-  * mysql&gt;  SELECT student.name, teacher.name  FROM student,teacher  WHERE sid=id;
+  * `mysql>  SELECT student.name, teacher.name  FROM student,teacher  WHERE sid=id;`
 * _**左连接和左连接, LEFT JOIN ,   RIGHT JOIN**_
-  * mysql&gt;   SELECT student.name , teacher.name  FROM student  LEFT  JOIN teacher  ON id=sid;
-  * mysql&gt;  SELECT student.name, teacher.name  FROM  teacher RIGHT JOIN student ON sid=id;
+  * `mysql>   SELECT student.name , teacher.name  FROM student  LEFT  JOIN teacher  ON id=sid;`
+  * `mysql>  SELECT student.name, teacher.name  FROM  teacher RIGHT JOIN student ON sid=id;`
 * _**内连接  INNER JOIN**_ 
-  * mysql&gt;  SELECT student.name,teachar.name FROM student INNER JOIN teachar ON sid=id;
+  * `mysql>  SELECT student.name,teachar.name FROM student INNER JOIN teachar ON sid=id;`
 * _**合并  UNION      ,  两个表的取出的数据类型以及个数必须相同.   默认合并相同行,  ALL 参数则不合并**_
-  * mysql&gt;   SELECT name,id   FROM student     UNION    SELECT name,sid FROM teacher ;
-  * mysql&gt;   SELECT name,id   FROM student    UNION ALL   SELECT name,sid FROM teacher; 
+  * `mysql>   SELECT name,id   FROM student     UNION    SELECT name,sid FROM teacher ;`
+  * `mysql>   SELECT name,id   FROM student    UNION ALL   SELECT name,sid FROM teacher;` 
 
 ### 设置一个临时值
 
-* mysql&gt;   SET  @b=10;
-* mysql&gt;  SELECT   SUM\(price\)   INTO @b FROM goods;
+* `mysql>   SET  @b=10;`
+* `mysql>  SELECT   SUM(price)   INTO @b FROM goods;`
 
 ### 序列
 
@@ -389,13 +389,6 @@ mysql> SET autoconnit = 'off';
     #自动保存设置, 手动修改为关闭.  这个是临时设置,也就是局部变量,下次登陆还是会恢复成原本的默认值.
 mysql> SET GLOBAL autoconnit = 'off';
     #自动保存设置, 手动修改为关闭.  这个是全局设置,所有的客户端都会被修改成这个设置.
-
-```
-
-## 局部变量
-
-```sql
-
 
 ```
 

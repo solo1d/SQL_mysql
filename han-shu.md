@@ -55,9 +55,10 @@
 * _**replace\(str1, str2 , str3\) ;    在str1 中寻找与 str2相同的串, 然后将str2相同的部分替换为 str3 .**_
 * _**reverse \(str\)   反转str 字符串的内容,然后输出,  例子:   'abcde'  ---&gt;   'edcba**_
 * _**right\(str, x\)    返回字符串最右边的x 个字符**_
-* rtrim\( std\)      返回字符串 str 尾部的空格
+* **rtrim\( std\)      返回字符串 str 右边的字符**
 * _**rpad\(srt, len ,char\);     返回 len 总长度的字符串, 如果 str 长度不够, 则在右侧 使用char 字符填充 到足够多的个数.**_
 * _**strcmp \( s1,s2\)    比较字符串 s1 和 s2, 相等返回0, 不相等则返回1**_
+* _**soundex\( 列 \)  = soundex \(str\)    返回字符串的 SOUNDEX 值 \(就是匹配发音\), 例如  int 和 iet   ,在 WHERE 语句中使用**_
 * _**trim\(str\)   去除字符串首部和尾部的所有空格**_
 * _**ucase\(str\)  或  upper\(str\)   返回将字符串 str 中所有字符转变为大写后的结果**_
 * _**substr\(str, pos, len\) ;  截取字符串,以及设置位置和截取长度,然后输出; \# substr\('asd',1\) 表示选择全部,  subsrt\('asd',1,2\) 选择两个,从第一个开始算 'as'.  substr\('asdf',-2\)  从尾部开始 选择两个 ‘df‘  ;**_
