@@ -363,7 +363,7 @@ mysql>    ALTER TABLE   表名   MODIFY  要修改的字段名   新字段类型
       * mysql&gt; SELECT goods\_name,goods\_id,cat\_id FROM goods WHERE goods\_id  IN  \(SELECT goods\_id FROM goods ORDER BY goods\_id DESC\)  GROUP BY cat\_id;
 * **FROM  型子查询:   即,内层sql的查询结果,当成一张临时表,供外层sql再次查询**
   * mysql&gt; SELECT goods\_id FROM  \(SELECT goods\_id  FROM goods \);
-* **EXISTS  型子查询: 是指  把外层sql的结果,拿到内层sql去测试, 如果内层sql成立,则改行取出.**
+* **EXISTS  型子查询: 是指  把外层sql的结果,拿到内层sql去测试, 如果内层sql成立,则该行取出.**
   * **mysql&gt; SELECT cat\_id,goods\_name FROM goods WHERE EXISTS \( SELECT \* FROM goods WHERE goods.cat\_id = category.cat\_id\);**
 
 ### 左连接 和 右连接  LEFT JOIN /  RIGHT JOIN
