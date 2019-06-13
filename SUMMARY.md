@@ -1,6 +1,7 @@
 # Table of contents
 
 * [SQL笔记](README.md)
+* [数据库原理](shu-ju-ku-yuan-li.md)
 * [简单操作和数据库简介](di-yi-zhang.md)
 * [Mysql服务器 安装和排错](mysql-an-zhuang-he-pai-cuo.md)
 * [mysql客户端 安装和连接](mysql-ke-hu-duan-an-zhuang-he-lian-jie.md)
