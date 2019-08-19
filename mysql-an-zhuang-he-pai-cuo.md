@@ -12,7 +12,7 @@ description: 'Linux, 服务名是 mysqld'
 
      sudo apt-get autoremove --purge mysql-server
 
-    sudo apt-get remove mysqyl-server
+    sudo apt-get remove mysql-server
 
     sudo apt-get autoremove mysql-server
 
