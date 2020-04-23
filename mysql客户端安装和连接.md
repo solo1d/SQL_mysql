@@ -17,3 +17,12 @@ description: 操作系统是MAC
      export CPPFLAGS="-I/usr/local/opt/mysql-client/include" ' >> .zshrc
 ```
 
+
+
+
+
+```shell
+使用命令来连接服务
+shell> mysql -u用户 -h域名或IP地址  -p  #-p表示后面会输入密码, 不应该采用明文输入
+```
+
