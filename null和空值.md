@@ -1,0 +1,5 @@
+- **NULL在 可变长 与 固定长度 的类型中均会占用空间**
+  - 在SQL Server非Sparse Columns中，存储NULL的值需1个bit的NULL bitmap mask。
+  - NULL就是一个值，而且这个值是未知的（unknown）；NULL不能等价任何值，甚至都不等价它自己，即NULL不等于NULL。
+- **空值不等于空字符**
+- **空值是不占用空间的**
