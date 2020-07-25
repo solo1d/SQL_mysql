@@ -82,6 +82,11 @@ unsigned int mysql_num_fields(MYSQL_RES *result)
     //参数: 将上面 mysql_store_result() 得到的 返回值传入进去就好了
     //返回的是表的字段个数, 也就是列的个数, 用来进行取数据时候的循环判断.
 
+#获取表头, 就是每个列的列名,
+MYSQL_FIELD *mysql_fetch_fields(MYSQL_RES *result)
+    //参数: mysql_store_result()  返回的结构体 ,MYSQL_RES
+    //返回值:  是一个结构体类型, 里面存放了表中列的名称和个数.
+    
 
 # 获取行数据
 MYSQL_ROW mysql_fetch_row(MYSQL_RES *result)
@@ -91,11 +96,7 @@ MYSQL_ROW mysql_fetch_row(MYSQL_RES *result)
     // 因为返回值 MYSQL_ROW 指向的是二维数组, 所以直接使用 [] 来取数据.
     
     
-#获取表头, 就是每个列的列名,
-MYSQL_FIELD *mysql_fetch_fields(MYSQL_RES *result)
-    //参数: mysql_store_result()  返回的结构体 ,MYSQL_RES
-    //返回值:  是一个结构体类型, 里面存放了表中列的名称和个数.
-    
+
     
 #释放结果集操作  ---- 在下面
 void mysql_free_result(MYSQL_RES *result);
@@ -176,9 +177,13 @@ my_ulonglong mysql_affected_rows(MYSQL *mysql)
     // 返回值: 大于零的整数表示受影响或检索的行数
     //        零表示没有为UPDATE 语句更新记录，没有与WHERE查询中的子句匹配的行或者尚未执行任何查询
     //        -1表示查询返回错误.
-    // mysql_affected_rows()可以在用mysql_query()or 执行语句后立即调用 mysql_real_query().
+    // mysql_affected_rows()可以在用mysql_query() 执行语句后立即调用 mysql_real_query().
     // 它返回改变，删除或插入的最后一条语句的行数，如果它是一个UPDATE， DELETE或 INSERT.
     // 对于 SELECT陈述， mysql_affected_rows() 功能如mysql_num_rows()
+    
+    
+const char* mysql_error(MYSQL* mysql)
+    // 输出详细的错误信息.
 ```
 
 ### 设置字符集
@@ -204,7 +209,7 @@ int mysql_set_character_set(MYSQL *mysql, const char *csname)
 * mysql\_stmt\_bindparam\(\)    绑定变量
   * 赋值
 * mysql\_stmt\_exectue\(\)   预处理sql执行
-  * 回到绑定变量的赋值.  \(循环重复赋值这一步\)
+  * 回到绑定变量的赋值.(循环重复赋值这一步)
 
 很少用到,多多参考[官方文档](https://dev.mysql.com/doc/refman/8.0/en/c-api-prepared-statement-function-overview.html)
 
@@ -247,7 +252,7 @@ void show_result(MYSQL_RES* result){   // 显示结果集的封装函数.
         {   
             //需要打印结果集
             for(i = 0; i < num_fields; i++) // 挨行 取出数据, 有多少列就循环多少次.
-            {
+            {  //每循环一次, 就打印一行
                 printf("%s\t",row[i] ? row[i] : "NULL");
             }
             printf("\n");
@@ -304,7 +309,7 @@ int main(int argc, const char * argv[]) {
     }
     
     //取回结果集
-    MYSQL_RES* result= mysql_store_result(mysql1);   //取结果
+    MYSQL_RES* result= mysql_store_result(mysql1);   // 取结果
     MYSQL_ROW  row;             // 这个值在栈上,不用释放.  其内部是个指针 
     
     //打印结果集
