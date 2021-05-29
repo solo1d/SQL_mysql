@@ -11,11 +11,11 @@ description: 'Linux, 服务名是 mysqld'
 ### 删除系统自带mysql：
 
      sudo apt-get autoremove --purge mysql-server
-
+    
     sudo apt-get remove mysql-server
-
+    
     sudo apt-get autoremove mysql-server
-
+    
     sudo apt-get remove mysql-common //重要
 
 ### 清除残留数据
@@ -24,22 +24,25 @@ description: 'Linux, 服务名是 mysqld'
 
 ### 安装Mysql软件
 
-    sudo apt-get install mysql-server sudo apt-get install mysql-client 
-
+    sudo  sid-used apt install mysql-server  mysql-client   -y
+    
       sudo apt-get nstall mysql-server python-mysqldb //安装python接口的mysql
 
 ### 安装完成后使用下面命令进行登陆和设定root密码\(第一次进入后会提示 Enter password: \) 
 
-$ sudo mysql -u root -p
+```shell
+$ sudo mysql -u root
+```
+
+
 
 ### 设置root密码
 
 ```sql
 use mysql;
-update user set plugin='mysql_native_password' where user='root';  --这行不要修改任何字符
-UPDATE user SET password=PASSWORD('你自己的密码') WHERE user='root'; --这行把密码设定了
-flush privileges; 
-exit;
+update user set host='%' where user ='root';  #更新域属性，'%'表示允许外部访问
+ALTER USER 'root'@'%' IDENTIFIED WITH mysql_native_password BY "新密码";
+flush privileges;
 ```
 
 ## 设置Mysql 数据库编码, 统一字符集
@@ -52,7 +55,11 @@ mysql> show global variables like '%char%';         #查看编码,然后按需�
 
 ### 使用以下命令来进行mysql 的服务的重启,停止,运行.
 
-      $ sudo /etc/init.d/mysql status/start/stop/restart
+```bash
+$ sudo systemctl restart  mysql.service 
+$ sudo systemctl start  mysql.service 
+$ sudo systemctl stop  mysql.service 
+```
 
 ## Mysql配置文件
 
@@ -64,34 +71,44 @@ mysql> show global variables like '%char%';         #查看编码,然后按需�
 
 ### 修改mysql配置，允许远程登录
 
-    $ sudo vim /etc/mysql/mariadb.conf.d/50-server.cnf  //打开mysql配置文件
+```bash
+#  $ sudo vim /etc/mysql/mariadb.conf.d/50-server.cnf  //打开mysql配置文件
+# 这一步已经不需要了
+```
 
    _**在配置文件中寻找bind-address这行 ,然后注释掉,然后重启mysql服务程序**_
 
-           $ sudo /etc/init.d/mysql restart
+```bash
+# $ sudo /etc/init.d/mysql restart
+# 这一步已经不需要了
+```
 
 ### 设置账号可以远程登录
 
-        $ mysql -u root -p    \#再次登陆进入数据库
+```bash
+$ mysql -u root -p    \#再次登陆进入数据库
+```
 
 ```sql
 use mysql;
-GRANT ALL PRIVILEGES ON *.* TO 'root'@'%'  IDENTIFIED BY '前面账户root密码' WITH GRANT OPTION;
+update user set host='%' where user ='root';  #更新域属性，'%'表示允许外部访问
+FLUSH PRIVILEGES;
+GRANT ALL PRIVILEGES ON *.* TO 'root'@'%'WITH GRANT OPTION;
 flush privileges;
-
+exit;
+#然后进行下面的步骤,完成后就可以使用其他客户端直接连接了
 ```
 
 #### 设置完成后重启mysql服务程序
 
-         $sudo /etc/init.d/mysql restart
+```bash
+$sudo systemctl restart  mysql.service 
+```
 
 #### 最好设置完成后重启以下服务器
 
-        $sudo shutdown -r now 
-
-
-
-### 安装结束, 借鉴参考以下内容[https://blog.csdn.net/u011270542/article/details/80023873](https://blog.csdn.net/u011270542/article/details/80023873)
-
+```bash
+$sudo shutdown -r now 
+```
 
 
