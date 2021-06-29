@@ -1,6 +1,6 @@
 # API编程
 
-## 点击进入 [官方参考手册](https://dev.mysql.com/doc/refman/8.0/en/c-api-functions.html) 进行更加详细的查询.
+## 点击进入 [官方参考手册](https://dev.mysql.com/doc/c-api/8.0/en/c-api-introduction.html) 进行更加详细的查询.
 
 ## 需要的头文件和库,以及编译指令
 

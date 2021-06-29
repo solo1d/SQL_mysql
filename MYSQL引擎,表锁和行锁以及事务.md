@@ -102,6 +102,8 @@ mysql>  SHOW STATUS like 'table%';
 * _`mysql>  commit ;        这种是 事务的 提交解锁, 操作都完成了,那么mysql会自动解锁. 适用于行锁`_
 * _`mysql>  rollback;       也是事务中的回滚  可以进行解锁, 适用于行锁`_
 
+
+
 ### MyISAM 并发插入
 
 #### MyISAM  表的读和写是串行的,  但这是就总体而言的.  在一定条件下   MyISAM 表也支持查询和插入操作的并发进行.
