@@ -191,7 +191,7 @@ mysql>  SELECT * FROM 表名;
   * `mysql>  SELECT student.name, teacher.name  FROM  teacher RIGHT JOIN student ON sid=id;`
 * _**内连接  INNER JOIN**_ 
   * `mysql>  SELECT student.name,teachar.name FROM student INNER JOIN teachar ON sid=id;`
-* _**合并  UNION      ,  两个表的取出的数据类型以及个数必须相同.   默认合并相同行,  ALL 参数则不合并**_
+  * _**合并  UNION      ,  两个表的取出的数据类型以及个数必须相同.   默认合并相同行,  ALL 参数则不合并**_
   * `mysql>   SELECT name,id   FROM student     UNION    SELECT name,sid FROM teacher ;`
   * `mysql>   SELECT name,id   FROM student    UNION ALL   SELECT name,sid FROM teacher;` 
 
@@ -240,7 +240,7 @@ mysql> DROP VIEW 视图表名;
 ```sql
 # 首先给用户对某个表的 特定的权限
 
-mysql> GRANT 权限SELECT,INSERT ON 表 to 用户;
+mysql> GRANT 权限如后所示 SELECT,INSERT ON 表 to 用户;
 
 # 使用GRANT 关键字来设置对表的权限,  INSERT,SELECT,UPDATE 
 # 后面跟着是表名 和  需要被设置的用户.

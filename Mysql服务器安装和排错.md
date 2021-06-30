@@ -72,15 +72,15 @@ $ sudo systemctl stop  mysql.service
 ### 修改mysql配置，允许远程登录
 
 ```bash
-#  $ sudo vim /etc/mysql/mariadb.conf.d/50-server.cnf  //打开mysql配置文件
-# 这一步已经不需要了
-```
+# 打开mysql配置文件
+$sudo vim mysql.conf.d/mysqld.cnf  
 
-   _**在配置文件中寻找bind-address这行 ,然后注释掉,然后重启mysql服务程序**_
+# 在配置文件中寻找 下面这两行 ,然后注释掉
+bind-address           = 127.0.0.1
+mysqlx-bind-address    = 127.0.0.1
 
-```bash
-# $ sudo /etc/init.d/mysql restart
-# 这一步已经不需要了
+#重启mysql服务程序
+$ sudo systemctl restart mysql
 ```
 
 ### 设置账号可以远程登录
@@ -110,5 +110,4 @@ $sudo systemctl restart  mysql.service
 ```bash
 $sudo shutdown -r now 
 ```
-
 
