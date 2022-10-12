@@ -25,12 +25,19 @@ description: 'Linux, 服务名是 mysqld'
 ### 安装Mysql软件
 
 ```bash
-wget https://dev.mysql.com/get/mysql-apt-config_0.8.18-1_all.deb ; 
+wget https://dev.mysql.com/get/mysql-apt-config_0.8.18-1_all.deb;
 sudo  apt install ./mysql-apt-config_0.8.18-1_all.deb  ;
+
+通过运行以下命令更新包列表并安装 MySQL 服务器包：
+
+sudo apt update  ;
+sudo sid-used apt update  ;
+sudo sid-used apt install mysql-server
+
 
 // 下面已废弃
 #sudo  sid-used apt install mysql-server  mysql-client   -y
-#sudo apt-get nstall mysql-server python-mysqldb //安装python接口的mysql
+#sudo apt-get install mysql-server python-mysqldb //安装python接口的mysql
 ```
 
 ### 安装完成后使用下面命令进行登陆和设定root密码\(第一次进入后会提示 Enter password: \) 
