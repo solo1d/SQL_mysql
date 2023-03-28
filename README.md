@@ -8,7 +8,7 @@
 
 #### 书写顺序\(执行顺序\):    SELECT\(7\)   聚合函数\(4\)  计算所有的表达式\(6\)  FROM\( 1\)     WHERE \(2\)      GROUP BY\(3\)       HAVING\(5\)     ORDER BY\(8\)     LIMIT \(9\)  
 
- SELECT DISTUBCT       删除查询结果中,重复的值,
+ **SELECT DISTINCT       删除查询结果中,重复的值**
 
 ### DLL : 数据库定义语言\( 管理数据结构的 \)  : 用来 定义表 有什么样的类型和数据.
 
@@ -30,7 +30,7 @@
 7. _**查表的字段, 也就是表的结构.**_
    1. `mysql>   DESC 表名;`
 8. _**给表加字段   , 一般表操作都是 ALTER ,   添加一个性别字段**_
-   1. `mysql>   ALTER TABLE  表名   ADD  添加的新列的名字     新列属性;`
+   1. `mysql>   ALTER TABLE  表名 ADD COLNUM  添加的新列的名字 新列属性;`
 9. _**修改字段的类型**_
    1. `mysql > ALTER TABLE   表名   MODIFY  要修改的字段名    新字段类型;`
 10. _**修改表的存储引擎**_
@@ -42,7 +42,7 @@
 13. _**修改库的字符集**_
     1. `mysql>   ALTER DATABASE 库名   DEFAULT  CHARACTER SET UTF8;`
 14. _**修改列名**_
-    1. `mysql>    ALTER  TABLE  表名  CHANGE 原始列名   新列名   新字段类型;`
+    1. `mysql>    ALTER  TABLE  表名  CHANGE COLUMN 原始列名   新列名   新字段类型;`
 15. _**查看建表细节, 也就是建表语句.**_
     1. `mysql>   SHOW CREATE TABLE 表名;`
 16. _**删除字段**_
@@ -57,7 +57,7 @@
 
 * _**查询所有的数据**_
   * `mysql>  SELECT * FROM   表名;`
-  * \#后面有个 /G 参数它会导致数据格式发生变化,可加可不加.  如果加了 则末尾不能出现 ;  分号
+  * \#后面有个 `\G` 参数它会导致数据格式发生变化,可加可不加.  如果加了 则末尾不能出现 ;  分号
   * `mysql>  SELECT COUNT(*) INTO @b  FROM 表名;`
   * **#将查询结果输出到 @b 这个变量中去,而不是显示在屏幕上, 统计表中 所有列不为 NULL 的行数**
       * `mysql> SET @LOCAL.BB='';`
@@ -73,7 +73,7 @@
 
 
 
-### DQL :   数据查询语句  
+### DQL :   数据查询语句
 
 * 查询所有数据 SELECT
   * 查询指定数据  WHERE
@@ -174,7 +174,7 @@ mysql>  SELECT * FROM 表名;
 * _**check\(\)     限制设定的列的取值范围,  代表他只能设置为 后面的值的属性范围内.\(MYSQl下无效\)**_
   * _mysql _  
 * _**显示表内已经存在索引**_
-  * mysql   SHOW  INDEX FROM 表名;   \# 可以添加 /G 参数来更具体化的显示\(不适合程序\)
+  * mysql   SHOW  INDEX FROM 表名;   \# 可以添加 `\G` 参数来更具体化的显示\(不适合程序\)
 * _**外键, 想在一个表添加外键,那么必须有另外一个主表,而且只能引用主表的主键.\(两个表的 外键和主键的 属性相同\) , 把外键看成引用就行了**_
   * 设置外键
     * mysql   CREATE TABLE  表名 \(  id int  ,  sid int  REFERENCES 主表名\(主键列\)\); 
@@ -359,11 +359,15 @@ mysql> CREATE USER 'username'@'host' IDENTIFIED BY 'password';
 # host：指定该用户在哪个主机上可以登陆，如果是本地用户可用localhost，
 #    如果想让该用户可以从任意远程主机登陆，可以使用通配符%
 # password：该用户的登陆密码，密码可以为空，如果为空则该用户可以不需要密码登陆服务器
+# 创建用户后应该刷新下权限 mysql> FLUSH PRIVILEGES;
 # 例子：
 
 mysql> CREATE USER 'dog'@'localhost' IDENTIFIED BY '123456';
 mysql> CREATE USER 'pig'@'192.168.1.101_' IDENTIFIED BY '123456';
 mysql> CREATE USER 'pig'@'%' IDENTIFIED BY '123456';
+
+##刷新权限
+mysql> FLUSH PRIVILEGES;
 ```
 
 ### 权限
@@ -373,6 +377,7 @@ mysql> GRANT privileges ON databasename.tablename TO 'username'@'host';
 # privileges：用户的操作权限，如SELECT，INSERT，UPDATE等，如果要授予所的权限则使用ALL
 # databasename：数据库名
 # tablename：表名，如果要授予该用户对所有数据库和表的相应操作权限则可用*表示，如*.*
+# 修改后应该刷新下权限 mysql> FLUSH PRIVILEGES;
 # 例子
 mysql> GRANT SELECT, INSERT ON test.user TO 'pig'@'%';
 mysql> GRANT ALL ON *.* TO 'pig'@'%';
@@ -383,6 +388,8 @@ mysql> GRANT ALL ON *.* TO 'pig'@'%';
 
 mysql> GRANT privileges ON databasename.tablename TO 
         'username'@'host' WITH GRANT OPTION;
+# 刷新下权限
+mysql> FLUSH PRIVILEGES;
 ```
 
 ### 设置与更改用户密码
@@ -396,8 +403,10 @@ mysql>  ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY "
 
 #例子
 mysql>  ALTER USER 'pi'@'' IDENTIFIED WITH mysql_native_password BY "123456";
-
 #用户pig, 登陆地点所有, 密码修改为123456
+
+# 刷新下权限
+mysql> FLUSH PRIVILEGES;
 ```
 
 ### 撤销用户权限
@@ -408,6 +417,8 @@ mysql> REVOKE privilege ON databasename.tablename FROM 'username'@'host';
 
 #例子
 mysql> REVOKE SELECT ON *.* FROM 'pig'@'%';
+# 刷新下权限
+mysql> FLUSH PRIVILEGES;
 
 #注意:
 #假如你在给用户'pig'@'%'授权的时候是这样的（或类似的）：
@@ -424,8 +435,10 @@ mysql> REVOKE SELECT ON *.* FROM 'pig'@'%';
 
 ```sql
 mysql> DROP USER 'username'@'host';
-
 # '用户名' @ '登录方式'
+
+# 刷新下权限
+mysql> FLUSH PRIVILEGES;
 ```
 
 
