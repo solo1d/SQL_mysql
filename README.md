@@ -405,6 +405,13 @@ mysql>  ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY "
 mysql>  ALTER USER 'pi'@'' IDENTIFIED WITH mysql_native_password BY "123456";
 #用户pig, 登陆地点所有, 密码修改为123456
 
+# mysql8的例子，开启远程访问
+mysql8>	update user set host='%' where user='root';
+# 下面第一句执行的时候会报错， 无视， 再次执行一次即可
+mysql8> GRANT ALL ON *.* TO 'root'@'%';			
+mysql8> GRANT ALL ON *.* TO 'root'@'%';
+
+
 # 刷新下权限
 mysql> FLUSH PRIVILEGES;
 ```
